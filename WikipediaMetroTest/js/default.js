@@ -8,7 +8,7 @@
         var detail = eventObject.detail;
         if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.launch) {
             if (detail.previousExecutionState !== Windows.ApplicationModel.Activation.ApplicationExecutionState.terminated) {
-                // TODO: This application has been newly launched. Initialize 
+                // TODO: This application has been newly launched. Initialize C:\Users\brion\src\wiki\WikipediaMetroTest\WikipediaMetroTest\js\default.js
                 // your application here.
             } else {
                 // TODO: This application has been reactivated from suspension. 
@@ -16,9 +16,7 @@
             }
             WinJS.UI.processAll();
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
-            console.log(detail.queryText);
-            var content = document.getElementById('content');
-            content.textContent = detail.queryText;
+            doSearch(detail.queryText);
         }
     };
 
@@ -35,6 +33,7 @@
     var searchPane = Windows.ApplicationModel.Search.SearchPane.getForCurrentView();
     searchPane.addEventListener("querysubmitted", function (e) {
         console.log('querysubmitted', e);
+        doSearch(e.queryText);
     });
     var request;
     // Register to Handle Suggestion Request
@@ -84,7 +83,13 @@
     // Handle the selection of a Result Suggestion for Scenario 6
     searchPane.addEventListener("resultsuggestionchosen", function (e) {
         console.log('search', e);
+        doSearch(e.queryText);
     });
+
+    function doSearch(query) {
+        var content = document.getElementById('content');
+        content.textContent = query;
+    }
 
     app.start();
 })();

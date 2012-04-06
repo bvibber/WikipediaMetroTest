@@ -97,9 +97,10 @@
     dataTransferManager.addEventListener("datarequested", function (e) {
         var request = e.request;
         var title = document.getElementById('title').textContent;
-        request.data.setUri(new Windows.Foundation.Uri('https://en.wikipedia.org/wiki/Foobar'));
-        request.data.properties.title = title;
-        request.data.properties.description = 'Link to ' + title + ' on Wikipedia';
+        var uri = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(title);
+        request.data.setUri(new Windows.Foundation.Uri(uri));
+        request.data.properties.title = title + ' - Wikipedia';
+        request.data.properties.description = 'Link to Wikipedia article';
     });
 
 

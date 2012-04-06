@@ -87,9 +87,23 @@
     });
 
     function doSearch(query) {
-        var content = document.getElementById('content');
-        content.textContent = query;
+        var title = document.getElementById('title');
+        title.textContent = query;
     }
+
+
+    // Outgoing sharing
+    var dataTransferManager = Windows.ApplicationModel.DataTransfer.DataTransferManager.getForCurrentView();
+    dataTransferManager.addEventListener("datarequested", function (e) {
+        var request = e.request;
+        var title = document.getElementById('title').textContent;
+        request.data.setUri(new Windows.Foundation.Uri('https://en.wikipedia.org/wiki/Foobar'));
+        request.data.properties.title = title;
+        request.data.properties.description = 'Link to ' + title + ' on Wikipedia';
+    });
+
+
+
 
     app.start();
 })();

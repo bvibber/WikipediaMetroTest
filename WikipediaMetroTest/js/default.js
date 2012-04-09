@@ -104,6 +104,18 @@
     });
 
 
+    // Live tile stuff
+    var Notifications = Windows.UI.Notifications;
+    var tileXml = Notifications.TileUpdateManager.getTemplateContent(Notifications.TileTemplateType.tileWideText03);
+    var tileAttributes = tileXml.getElementsByTagName("text");
+    tileAttributes[0].appendChild(tileXml.createTextNode("Hello World! My very own tile notification"));
+    var tileNotification = new Notifications.TileNotification(tileXml);
+    var currentTime = new Date();
+    tileNotification.expirationTime = new Date(currentTime.getTime() + 600 * 1000);
+    Notifications.TileUpdateManager.createTileUpdaterForApplication().update(tileNotification);
+
+
+
 
 
     app.start();

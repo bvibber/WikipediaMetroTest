@@ -58,6 +58,9 @@
     <Content Include="images\storelogo.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="win8-tile-small.png" />
+    <Content Include="win8-tile.png" />
+    <Content Include="win8-wide-tile.png" />
     <None Include="WikipediaMetroTest_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

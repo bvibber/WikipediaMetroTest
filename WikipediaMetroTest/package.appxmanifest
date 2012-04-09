@@ -16,8 +16,8 @@
   </Resources>
   <Applications>
     <Application Id="App" StartPage="default.html">
-      <VisualElements DisplayName="WikipediaMetroTest" Logo="images\logo.png" SmallLogo="images\smalllogo.png" Description="WikipediaMetroTest" ForegroundText="light" BackgroundColor="#000000">
-        <DefaultTile ShowName="allLogos" />
+      <VisualElements DisplayName="Wikipedia" Logo="win8-tile.png" SmallLogo="win8-tile-small.png" Description="WikipediaMetroTest" ForegroundText="dark" BackgroundColor="#efefef">
+        <DefaultTile ShowName="noLogos" WideLogo="win8-wide-tile.png" />
         <SplashScreen Image="images\splashscreen.png" />
       </VisualElements>
       <Extensions>

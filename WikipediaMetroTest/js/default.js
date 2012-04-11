@@ -4,6 +4,11 @@
     "use strict";
     var app = WinJS.Application;
 
+    // Set up data bindings for the search results list - empty initial
+    WinJS.Namespace.define("SearchResults", {
+        itemList: new WinJS.Binding.List([])
+    });
+
     app.onactivated = function (eventObject) {
         var detail = eventObject.detail;
         if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.launch) {
@@ -105,13 +110,16 @@
                     // ..
                     $("#content").text('Search error');
                 } else {
-                    $("#content").empty();
-                    var $dl = $("<dl>");
+                    var results = [];
                     data.query.search.forEach(function (item, i) {
-                        $("<dt>").text(item.title).appendTo($dl);
-                        $("<dd>").text(stripHtmlTags(item.snippet)).appendTo($dl);
+                        results.push({
+                            title: item.title,
+                            description: stripHtmlTags(item.snippet)
+                        });
                     });
-                    $dl.appendTo("#content");
+                    // Replace the current list
+                    var list = SearchResults.itemList;
+                    list.splice(0, list.length, results);
                 }
             }
         });

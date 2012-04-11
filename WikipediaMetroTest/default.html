@@ -17,6 +17,11 @@
 <body>
     <h1>Wikipedia</h1>
     <h2 id="title"></h2>
-    <div id="content"></div>
+    <div id="content">
+        <div id="resultlist"
+            data-win-control="WinJS.UI.ListView"
+            data-win-options="{ itemDataSource : SearchResults.itemList.dataSource }">
+        </div>
+    </div>
 </body>
 </html>

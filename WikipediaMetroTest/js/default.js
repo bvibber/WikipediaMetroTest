@@ -105,14 +105,37 @@
 
 
     // Live tile stuff
-    var Notifications = Windows.UI.Notifications;
-    var tileXml = Notifications.TileUpdateManager.getTemplateContent(Notifications.TileTemplateType.tileWideText03);
-    var tileAttributes = tileXml.getElementsByTagName("text");
-    tileAttributes[0].appendChild(tileXml.createTextNode("Hello World! My very own tile notification"));
-    var tileNotification = new Notifications.TileNotification(tileXml);
-    var currentTime = new Date();
-    tileNotification.expirationTime = new Date(currentTime.getTime() + 600 * 1000);
-    Notifications.TileUpdateManager.createTileUpdaterForApplication().update(tileNotification);
+    function updateLiveTile(title, content) {
+        var Notifications = Windows.UI.Notifications;
+        var tileXml = Notifications.TileUpdateManager.getTemplateContent(Notifications.TileTemplateType.tileWideText09);
+        var tileAttributes = tileXml.getElementsByTagName("text");
+        tileAttributes[0].appendChild(tileXml.createTextNode(title));
+        tileAttributes[1].appendChild(tileXml.createTextNode(content));
+        var tileNotification = new Notifications.TileNotification(tileXml);
+        var currentTime = new Date();
+        tileNotification.expirationTime = new Date(currentTime.getTime() + 600 * 1000);
+        Notifications.TileUpdateManager.createTileUpdaterForApplication().update(tileNotification);
+    }
+    request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status >= 200 && request.status < 300) {
+                console.log(request.status);
+                console.log(request.responseXML);
+                if (request.responseXML) {
+                    var summaries = request.responseXML.getElementsByTagName('summary');
+                    console.log(summaries);
+                    var summary = summaries[summaries.length - 1];
+                    var html = summary.text,
+                        txt = html.replace(/<[^>]+>/g, ''); // fixme put in real html parser
+                    updateLiveTile("Featured Article", txt);
+                }
+            }
+        }
+    };
+    request.open("GET", "https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom", true);
+    request.send();
+
 
 
 

@@ -13,14 +13,38 @@
     <link href="/css/default.css" rel="stylesheet">
     <script src="/js/jquery-1.7.2.js"></script>
     <script src="/js/default.js"></script>
+
+    <style>
+        .page {
+            margin-top: 40px;
+            margin-left: 40px;
+        }
+        .searchItemTemplate {
+            width: 310px;
+            height: 100px;
+            border: none;
+            background: #eee;
+        }
+    </style>
 </head>
 <body>
-    <h1>Wikipedia</h1>
-    <h2 id="title"></h2>
-    <div id="content">
-        <div id="resultlist"
-            data-win-control="WinJS.UI.ListView"
-            data-win-options="{ itemDataSource : SearchResults.itemList.dataSource }">
+    <div class="page">
+        <h1>Wikipedia</h1>
+        <h2 id="title"></h2>
+        <div id="content">
+            <div id="searchItemTemplate" data-win-control="WinJS.Binding.Template">
+                <div class="searchItemTemplate" style="">
+                    <h4 data-win-bind="innerText: title" style="font-weight: bold"></h4>
+                    <h6 data-win-bind="innerText: snippet"></h6>
+                </div>
+            </div>
+            <div id="resultlist"
+                data-win-control="WinJS.UI.ListView"
+                data-win-options="{
+                    itemDataSource : SearchResults.itemList.dataSource,
+                    itemTemplate: select('#searchItemTemplate')
+                }">
+            </div>
         </div>
     </div>
 </body>

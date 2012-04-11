@@ -97,6 +97,7 @@
                 list: 'search',
                 srwhat: 'text',
                 srsearch: query,
+                srlimit: 21,
                 format: 'json'
             },
             success: function (data) {
@@ -110,16 +111,16 @@
                     // ..
                     $("#content").text('Search error');
                 } else {
-                    var results = [];
-                    data.query.search.forEach(function (item, i) {
-                        results.push({
-                            title: item.title,
-                            description: stripHtmlTags(item.snippet)
-                        });
-                    });
                     // Replace the current list
                     var list = SearchResults.itemList;
-                    list.splice(0, list.length, results);
+                    list.splice(0, list.length);
+
+                    data.query.search.forEach(function (item, i) {
+                        list.push({
+                            title: item.title,
+                            snippet: stripHtmlTags(item.snippet)
+                        });
+                    });
                 }
             }
         });

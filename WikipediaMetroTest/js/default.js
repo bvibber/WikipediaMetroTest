@@ -77,9 +77,44 @@
         doSearch(e.queryText);
     });
 
+    function stripHtmlTags(html) {
+        return html.replace(/<[^>]+>/g, ''); // fixme put in real html parser
+    }
+
     function doSearch(query) {
         var title = document.getElementById('title');
         title.textContent = query;
+        var url = 'https://en.wikipedia.org/w/api.php';
+        $.ajax({
+            url: url,
+            data: {
+                action: 'query',
+                list: 'search',
+                srwhat: 'text',
+                srsearch: query,
+                format: 'json'
+            },
+            success: function (data) {
+                // data.query.search
+                // [
+                //   {ns, size, snippet, timestamp, title, wordcount
+                // ]
+                // data.query.searchinfo
+                //   totalhits
+                if (data.error) {
+                    // ..
+                    $("#content").text('Search error');
+                } else {
+                    $("#content").empty();
+                    var $dl = $("<dl>");
+                    data.query.search.forEach(function (item, i) {
+                        $("<dt>").text(item.title).appendTo($dl);
+                        $("<dd>").text(stripHtmlTags(item.snippet)).appendTo($dl);
+                    });
+                    $dl.appendTo("#content");
+                }
+            }
+        });
     }
 
 
@@ -114,7 +149,7 @@
             console.log(summaries);
             var summary = summaries[summaries.length - 1];
             var html = summary.text,
-                txt = html.replace(/<[^>]+>/g, ''); // fixme put in real html parser
+                txt = stripHtmlTags(html);
             updateLiveTile("Featured Article", txt);
         }
     });

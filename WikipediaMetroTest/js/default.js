@@ -55,30 +55,21 @@
         }
 
         // Create request to obtain suggestions from service and supply them to the Search Pane
-        request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (request.readyState === 4) {
-                if (request.status >= 200 && request.status < 300) {
-                    if (request.responseText) {
-                        var parsedResponse = JSON.parse(request.responseText);
-                        if (parsedResponse && parsedResponse instanceof Array) {
-                            var suggestions = parsedResponse[1];
-                            if (suggestions) {
-                                suggestionRequest.searchSuggestionCollection.appendQuerySuggestions(suggestions);
-                                console.log("Suggestions provided for query: " + queryText);
-                            } else {
-                                console.log("No suggestions provided for query: " + queryText);
-                            }
-                        }
+        $.ajax({
+            url: suggestionUri,
+            success: function(data, textstatus, request) {
+                if (data && data instanceof Array) {
+                    var suggestions = data[1];
+                    if (suggestions) {
+                        suggestionRequest.searchSuggestionCollection.appendQuerySuggestions(suggestions);
+                        console.log("Suggestions provided for query: " + queryText);
+                    } else {
+                        console.log("No suggestions provided for query: " + queryText);
                     }
-                } else {
-                    console.log("Error retrieving suggestions for query: " + queryText);
                 }
                 deferral.complete(); // Indicate we're done supplying suggestions.
             }
-        };
-        request.open("GET", suggestionUri, true);
-        request.send();
+        });
     });
     // Handle the selection of a Result Suggestion for Scenario 6
     searchPane.addEventListener("resultsuggestionchosen", function (e) {
@@ -116,30 +107,17 @@
         tileNotification.expirationTime = new Date(currentTime.getTime() + 600 * 1000);
         Notifications.TileUpdateManager.createTileUpdaterForApplication().update(tileNotification);
     }
-    request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (request.readyState === 4) {
-            if (request.status >= 200 && request.status < 300) {
-                console.log(request.status);
-                console.log(request.responseXML);
-                if (request.responseXML) {
-                    var summaries = request.responseXML.getElementsByTagName('summary');
-                    console.log(summaries);
-                    var summary = summaries[summaries.length - 1];
-                    var html = summary.text,
-                        txt = html.replace(/<[^>]+>/g, ''); // fixme put in real html parser
-                    updateLiveTile("Featured Article", txt);
-                }
-            }
+    $.ajax({
+        url: "https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom",
+        success: function(data, textstatus, request) {
+            var summaries = request.responseXML.getElementsByTagName('summary');
+            console.log(summaries);
+            var summary = summaries[summaries.length - 1];
+            var html = summary.text,
+                txt = html.replace(/<[^>]+>/g, ''); // fixme put in real html parser
+            updateLiveTile("Featured Article", txt);
         }
-    };
-    request.open("GET", "https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom", true);
-    request.send();
-
-
-
-
-
+    });
 
     app.start();
 })();

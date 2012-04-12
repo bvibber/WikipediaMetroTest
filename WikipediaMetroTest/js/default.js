@@ -20,6 +20,10 @@
                 // Restore application state here.
             }
             WinJS.UI.processAll();
+            $('#back').click(function () {
+                clearSearch();
+            });
+
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
             doSearch(detail.queryText);
         }
@@ -87,8 +91,9 @@
     }
 
     function doSearch(query) {
-        var title = document.getElementById('title');
-        title.textContent = query;
+        $('#reader').hide();
+        $('#search-results').show();
+        $('#title').text(query);
         var url = 'https://en.wikipedia.org/w/api.php';
         $.ajax({
             url: url,
@@ -124,6 +129,15 @@
                 }
             }
         });
+    }
+
+    function clearSearch() {
+        // Clear the results list
+        var list = SearchResults.itemList;
+        list.splice(0, list.length);
+        $('#search-results').hide();
+        $('#reader').show();
+        $('#title').text('\u00a0'); // nbsp
     }
 
 

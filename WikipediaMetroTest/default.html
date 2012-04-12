@@ -27,15 +27,21 @@
             border: none;
             background: #eee;
         }
+        .win-listview {
+            height: 600px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Wikipedia</h1>
-        <h2 id="title"></h2>
+        <h1> <img id="back" src="images/back.svg" width="41" height="41" /> Wikipedia</h1>
+        <h2 id="title">&nbsp;</h2>
+    </div>
+    <div class="page" id="reader">
+        <div id="content"></div>
     </div>
     <div class="page">
-        <div id="content">
+        <div id="search-results">
             <div id="searchItemTemplate" data-win-control="WinJS.Binding.Template">
                 <div class="searchItemTemplate" style="">
                     <h4 data-win-bind="innerText: title" style="font-weight: bold"></h4>

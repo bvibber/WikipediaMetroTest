@@ -15,9 +15,11 @@
     <script src="/js/default.js"></script>
 
     <style>
-        .page {
-            margin-top: 40px;
-            margin-left: 40px;
+        .header {
+            padding-top: 40px;
+            padding-left: 80px;
+            background-color: #f4f1f1;
+            border-bottom: solid 1px #b8b8b8;
         }
         .searchItemTemplate {
             width: 310px;
@@ -28,9 +30,11 @@
     </style>
 </head>
 <body>
-    <div class="page">
+    <div class="header">
         <h1>Wikipedia</h1>
         <h2 id="title"></h2>
+    </div>
+    <div class="page">
         <div id="content">
             <div id="searchItemTemplate" data-win-control="WinJS.Binding.Template">
                 <div class="searchItemTemplate" style="">

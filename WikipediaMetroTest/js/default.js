@@ -19,11 +19,20 @@
                 // TODO: This application has been reactivated from suspension. 
                 // Restore application state here.
             }
-            WinJS.UI.processAll();
-            $('#back').click(function () {
-                clearSearch();
+            WinJS.UI.processAll().then(function () {
+                $('#back').click(function () {
+                    clearSearch();
+                });
+                $('#resultlist').bind('iteminvoked', function (event) {
+                    var index = event.originalEvent.detail.itemIndex;
+                    var selected = SearchResults.itemList.getItem(index);
+                    console.log(selected);
+                    if (!selected.data.title) {
+                        throw new Error("bad title");
+                    }
+                    doLoadPage(selected.data.title);
+                });
             });
-
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
             doSearch(detail.queryText);
         }
@@ -83,7 +92,7 @@
     // Handle the selection of a Result Suggestion for Scenario 6
     searchPane.addEventListener("resultsuggestionchosen", function (e) {
         console.log('search', e);
-        doSearch(e.queryText);
+        doLoadPage(e.queryText);
     });
 
     function stripHtmlTags(html) {
@@ -140,6 +149,58 @@
         $('#title').text('\u00a0'); // nbsp
     }
 
+    function doLoadPage(title) {
+        clearSearch();
+        $.ajax({
+            url: 'https://en.wikipedia.org/w/api.php',
+            data: {
+                action: 'mobileview',
+                page: title,
+                sections: 'all',
+                format: 'json'
+            },
+            success: function (data) {
+                /*
+                mobileview
+                    .normlizedtitle
+                    sections [
+                        {
+                            id
+                            text
+                        }
+                        {
+                            toclevel
+                            line
+                            id
+                        }
+                    ]
+
+                */
+                $('#content').empty();
+                data.mobileview.sections.forEach(function (section) {
+                    var html = section.text;
+                    var $div = $('<div>');
+                    MSApp.execUnsafeLocalFunction(function () {
+                        $div.append(html);
+                    });
+                    $div.find('img').each(function () {
+                        // hack for protocol-relative images
+                        $(this).attr('src', 'https:' + $(this).attr('src'));
+                    });
+                    $div.on('click', 'a', function (event) {
+                        var url = $(this).attr('href');
+                        console.log(url);
+                        var matches = url.match(/\/wiki\/(.*)/);
+                        if (matches) {
+                            doLoadPage(matches[1]);
+                            event.preventDefault();
+                        }
+                    });
+                    $('#content').append($div);
+                });
+            }
+        });
+    }
 
     // Outgoing sharing
     var dataTransferManager = Windows.ApplicationModel.DataTransfer.DataTransferManager.getForCurrentView();

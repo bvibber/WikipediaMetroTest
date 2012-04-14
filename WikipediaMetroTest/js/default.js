@@ -160,6 +160,10 @@
                 format: 'json'
             },
             success: function (data) {
+                if (data.error) {
+                    $('#title').text('error');
+                    return;
+                }
                 /*
                 mobileview
                     .normlizedtitle

@@ -182,15 +182,22 @@
                 */
                 $('#content').empty();
                 data.mobileview.sections.forEach(function (section) {
+                    if (!section.text) {
+                        return;
+                    }
                     var html = section.text;
+                    // hack for protocol-relative images (unsafe)
+                    html = html.replace(/"\/\/upload\.wikimedia\.org/g, '"https://upload.wikimedia.org');
                     var $div = $('<div>');
                     MSApp.execUnsafeLocalFunction(function () {
                         $div.append(html);
                     });
+                    /*
                     $div.find('img').each(function () {
                         // hack for protocol-relative images
                         $(this).attr('src', 'https:' + $(this).attr('src'));
                     });
+                    */
                     $div.on('click', 'a', function (event) {
                         var url = $(this).attr('href');
                         console.log(url);

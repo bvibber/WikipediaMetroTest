@@ -263,8 +263,11 @@
             var matches = url.match(/\/wiki\/(.*)/);
             if (matches) {
                 doLoadPage(matches[1]);
-                event.preventDefault();
+            } else {
+                var uri = new Windows.Foundation.Uri(url);
+                Windows.System.Launcher.launchUriAsync(uri);
             }
+            event.preventDefault();
         });
         $(target).append($div);
     }

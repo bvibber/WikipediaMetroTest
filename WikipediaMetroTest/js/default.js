@@ -149,12 +149,14 @@
         var list = SearchResults.itemList;
         list.splice(0, list.length);
         $('#search-results').hide();
-        $('#title').text('\u00a0'); // nbsp
+        $('#title').text('Wikipedia');
     }
 
     function doLoadPage(title) {
         $('#hub').hide();
         clearSearch();
+        $('#content').empty();
+        $('#title').text(title.replace(/_/g, ' '));
         $('#reader').show();
 
         $.ajax({

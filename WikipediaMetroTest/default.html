@@ -30,7 +30,7 @@
         .win-listview {
             height: 600px;
         }
-        #content {
+        #content, #hub {
             font-family: Cambria;
             height: 600px;
             -ms-overflow-x: scroll;
@@ -41,8 +41,11 @@
             text-align: justify; */
             column-fill: auto;
         }
-        #content h2 {
+        #content h2, #hub h2 {
             break-before:  column;
+        }
+        #potd {
+            column-span: all;
         }
     </style>
 </head>
@@ -52,14 +55,15 @@
         <h2 id="title">&nbsp;</h2>
     </div>
     <div class="hub" id="hub">
-        <h2>Featured article</h2>
-        <div id="featured"></div>
-
         <h2>Picture of the day</h2>
         <div id="potd"></div>
 
+        <h2>Featured article</h2>
+        <div id="featured"></div>
+
         <h2>On this day</h2>
         <div id="onthisday"></div>
+
     </div>
     <div class="page" id="reader">
         <div id="content"></div>

@@ -20,8 +20,11 @@
                 // Restore application state here.
             }
             WinJS.UI.processAll().then(function () {
+                initHub();
                 $('#back').click(function () {
                     clearSearch();
+                    $('#reader').hide();
+                    $('#hub').show();
                 });
                 $('#resultlist').bind('iteminvoked', function (event) {
                     var index = event.originalEvent.detail.itemIndex;
@@ -100,6 +103,7 @@
     }
 
     function doSearch(query) {
+        $('#hub').hide();
         $('#reader').hide();
         $('#search-results').show();
         $('#title').text(query);
@@ -145,12 +149,14 @@
         var list = SearchResults.itemList;
         list.splice(0, list.length);
         $('#search-results').hide();
-        $('#reader').show();
         $('#title').text('\u00a0'); // nbsp
     }
 
     function doLoadPage(title) {
+        $('#hub').hide();
         clearSearch();
+        $('#reader').show();
+
         $.ajax({
             url: 'https://en.wikipedia.org/w/api.php',
             data: {
@@ -185,29 +191,7 @@
                     if (!section.text) {
                         return;
                     }
-                    var html = section.text;
-                    // hack for protocol-relative images (unsafe)
-                    html = html.replace(/"\/\/upload\.wikimedia\.org/g, '"https://upload.wikimedia.org');
-                    var $div = $('<div>');
-                    MSApp.execUnsafeLocalFunction(function () {
-                        $div.append(html);
-                    });
-                    /*
-                    $div.find('img').each(function () {
-                        // hack for protocol-relative images
-                        $(this).attr('src', 'https:' + $(this).attr('src'));
-                    });
-                    */
-                    $div.on('click', 'a', function (event) {
-                        var url = $(this).attr('href');
-                        console.log(url);
-                        var matches = url.match(/\/wiki\/(.*)/);
-                        if (matches) {
-                            doLoadPage(matches[1]);
-                            event.preventDefault();
-                        }
-                    });
-                    $('#content').append($div);
+                    insertWikiHtml('#content', section.text);
                 });
             }
         });
@@ -237,17 +221,68 @@
         tileNotification.expirationTime = new Date(currentTime.getTime() + 600 * 1000);
         Notifications.TileUpdateManager.createTileUpdaterForApplication().update(tileNotification);
     }
-    $.ajax({
-        url: "https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom",
-        success: function(data, textstatus, request) {
-            var summaries = request.responseXML.getElementsByTagName('summary');
-            console.log(summaries);
-            var summary = summaries[summaries.length - 1];
-            var html = summary.text,
-                txt = stripHtmlTags(html);
+    function fetchFeed(feed, callback) {
+        $.ajax({
+            url: "https://en.wikipedia.org/w/api.php",
+            data: {
+                action: 'featuredfeed',
+                feed: feed,
+                feedformat: 'atom'
+            },
+            success: function (data, textstatus, request) {
+                var summaries = request.responseXML.getElementsByTagName('summary');
+                var summary = summaries[summaries.length - 1];
+                var html = summary.text;
+                callback(html);
+            }
+        });
+    }
+
+    function insertWikiHtml(target, html) {
+        // hack for protocol-relative images (unsafe)
+        html = html.replace(/"\/\/upload\.wikimedia\.org/g, '"https://upload.wikimedia.org');
+        var $div = $('<div>');
+        MSApp.execUnsafeLocalFunction(function () {
+            $div.append(html);
+        });
+        /*
+        $div.find('img').each(function () {
+            // hack for protocol-relative images
+            var $img = $(this),
+                src = $img.attr('src');
+            if (src.substr(0, 2) == '//') {
+                $img.attr('src', 'https:' + src);
+            }
+        });
+        */
+        $div.on('click', 'a', function (event) {
+            var url = $(this).attr('href');
+            console.log(url);
+            var matches = url.match(/\/wiki\/(.*)/);
+            if (matches) {
+                doLoadPage(matches[1]);
+                event.preventDefault();
+            }
+        });
+        $(target).append($div);
+    }
+
+    function initHub() {
+        $('#hub').show();
+        $('#search').hide();
+        $('#reader').hide();
+        fetchFeed('featured', function (html) {
+            insertWikiHtml('#featured', html);
+            var txt = stripHtmlTags(html);
             updateLiveTile("Featured Article", txt);
-        }
-    });
+        });
+        fetchFeed('potd', function (html) {
+            insertWikiHtml('#potd', html);
+        });
+        fetchFeed('onthisday', function (html) {
+            insertWikiHtml('#onthisday', html);
+        });
+    }
 
     app.start();
 })();

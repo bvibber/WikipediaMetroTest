@@ -42,19 +42,33 @@
         #content, #hub {
             font-family: Cambria;
             height: 600px;
-            -ms-overflow-x: scroll;
-            -ms-overflow-y: none;
-            column-width: 320px;
-            column-gap: 20px; 
-/*            -ms-hyphens: auto; 
-            text-align: justify; */
-            column-fill: auto;
         }
         #content h2, #hub h2 {
             break-before:  column;
         }
         #potd {
             column-span: all;
+        }
+
+        @media all and (min-width: 1024px) {
+            /* Fullscreen or most of screen */
+            #content, #hub {
+                -ms-overflow-x: scroll;
+                -ms-overflow-y: none;
+                column-width: 300px;
+                column-gap: 20px; 
+                column-fill: auto;
+                padding:  10px;
+                padding-left: 120px;
+            }
+        }
+        @media all and (max-width: 1023px) {
+            /* Snapped */
+            #content, #hub {
+                padding:  10px;
+                -ms-overflow-x: none;
+                -ms-overflow-y: scroll;
+            }
         }
     </style>
 </head>

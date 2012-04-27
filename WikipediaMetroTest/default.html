@@ -44,10 +44,13 @@
             height: 600px;
         }
         #content h2, #hub h2 {
-            break-before:  column;
+            /*break-before:  column;*/
         }
         #potd {
             column-span: all;
+        }
+        #potd table {
+            max-width: 768px;
         }
 
         @media all and (min-width: 1024px) {
@@ -59,7 +62,13 @@
                 column-gap: 20px; 
                 column-fill: auto;
                 padding:  10px;
+                
+                /* Padding for the left end of the screen */
                 padding-left: 120px;
+                
+                /* Margin to force the last column to spill over */
+                /* @fixme need to add more padding inside */
+                margin-right: -120px;
             }
         }
         @media all and (max-width: 1023px) {

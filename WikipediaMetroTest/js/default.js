@@ -35,12 +35,16 @@
                     }
                     doLoadPage(selected.data.title);
                 });
+                $(window).bind('resize', function () {
+                    sizeContent();
+                });
+                $(window).resize();
             });
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
             doSearch(detail.queryText);
         }
     };
-
+    
     app.oncheckpoint = function (eventObject) {
         // TODO: This application is about to be suspended. Save any state
         // that needs to persist across suspensions here. You might use the 
@@ -158,6 +162,7 @@
         $('#content').empty();
         $('#title').text(title.replace(/_/g, ' '));
         $('#reader').show();
+        sizeContent();
 
         $.ajax({
             url: 'https://en.wikipedia.org/w/api.php',
@@ -287,6 +292,12 @@
         fetchFeed('onthisday', function (html) {
             insertWikiHtml('#onthisday', html);
         });
+    }
+
+    function sizeContent() {
+        var top = $('#content').position().top;
+        var h = $(window).height() - top - 60;
+        $('#content').css('height', h + 'px');
     }
 
     app.start();

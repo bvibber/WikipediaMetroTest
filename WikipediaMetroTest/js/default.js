@@ -271,16 +271,25 @@
         });
         */
         $div.on('click', 'a', function (event) {
-            var url = $(this).attr('href');
-            console.log(url);
-            var matches = url.match(/\/wiki\/(.*)/);
-            if (matches) {
-                doLoadPage(matches[1]);
+            var url = $(this).attr('href'),
+                hashMatches = url.match(/^#/),
+                wikiMatches = url.match(/\/wiki\/(.*)/);
+            if (hashMatches) {
+                // no-op
+                // fixme: check for references
+            } else if (wikiMatches) {
+                var title = decodeURIComponent(wikiMatches[1]);
+                doLoadPage(title);
+                event.preventDefault();
             } else {
+                if (url.match(/^\/\//)) {
+                    // fixup for protocol-relative links
+                    url = 'https' + url;
+                }
                 var uri = new Windows.Foundation.Uri(url);
                 Windows.System.Launcher.launchUriAsync(uri);
+                event.preventDefault();
             }
-            event.preventDefault();
         });
         $(target).append($div);
     }

@@ -284,7 +284,7 @@
             } else {
                 if (url.match(/^\/\//)) {
                     // fixup for protocol-relative links
-                    url = 'https' + url;
+                    url = 'https:' + url;
                 }
                 var uri = new Windows.Foundation.Uri(url);
                 Windows.System.Launcher.launchUriAsync(uri);

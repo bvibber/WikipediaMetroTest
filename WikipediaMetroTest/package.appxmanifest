@@ -1,23 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="db7fb436-845d-4404-9a97-f926a7117e0b" Version="1.0.0.0" Publisher="CN=brion" />
+  <Identity Name="a947dc84-923c-48c6-9187-59e643af9cba" Version="1.0.0.0" Publisher="CN=brion" />
   <Properties>
     <DisplayName>WikipediaMetroTest</DisplayName>
-    <Description>WikipediaMetroTest</Description>
-    <PublisherDisplayName>brion</PublisherDisplayName>
+    <PublisherDisplayName>Wikimedia Foundation</PublisherDisplayName>
     <Logo>images\storelogo.png</Logo>
   </Properties>
   <Prerequisites>
-    <OSMinVersion>6.2</OSMinVersion>
-    <OSMaxVersionTested>6.2</OSMaxVersionTested>
+    <OSMinVersion>6.2.0</OSMinVersion>
+    <OSMaxVersionTested>6.2.0</OSMaxVersionTested>
   </Prerequisites>
   <Resources>
     <Resource Language="x-generate" />
   </Resources>
   <Applications>
     <Application Id="App" StartPage="default.html">
-      <VisualElements DisplayName="Wikipedia" Logo="win8-tile.png" SmallLogo="win8-tile-small.png" Description="WikipediaMetroTest" ForegroundText="dark" BackgroundColor="#efefef">
-        <DefaultTile ShowName="noLogos" WideLogo="win8-wide-tile.png" />
+      <VisualElements DisplayName="Wikipedia" Logo="win8-tile.png" SmallLogo="win8-tile-small.png" Description="Wikipedia Mobile for Windows 8" ForegroundText="dark" BackgroundColor="#ffffff">
+        <DefaultTile ShowName="allLogos" WideLogo="win8-wide-tile.png" />
         <SplashScreen Image="images\splashscreen.png" />
       </VisualElements>
       <Extensions>
@@ -27,5 +26,6 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
+    <DeviceCapability Name="location" />
   </Capabilities>
 </Package>

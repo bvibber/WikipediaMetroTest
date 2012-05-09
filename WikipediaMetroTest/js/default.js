@@ -247,14 +247,21 @@
             success: function (data, textstatus, request) {
                 var summaries = request.responseXML.getElementsByTagName('summary');
                 var summary = summaries[summaries.length - 1];
-                var html = summary.text;
-                callback(html);
+                var html = summary.textContent;
+                if (typeof html === "string") {
+                    callback(html);
+                } else {
+                    throw new Error("Could not get feed contents");
+                }
             }
         });
     }
 
     function insertWikiHtml(target, html) {
         // hack for protocol-relative images (unsafe)
+        if (typeof html !== "string") {
+            throw new Error('we got a non-string');
+        }
         html = html.replace(/"\/\/upload\.wikimedia\.org/g, '"https://upload.wikimedia.org');
         var $div = $('<div>');
         MSApp.execUnsafeLocalFunction(function () {

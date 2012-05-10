@@ -39,14 +39,6 @@
                     sizeContent();
                 });
                 $(window).resize();
-
-                // Use mouse scroll wheel to scroll horizontally.
-                // Feels nice and Metro-native!
-                $(document).bind('mousewheel', function (event) {
-                    var wheelDelta = event.originalEvent.wheelDelta,
-                        scrollPos = $('#content').scrollLeft();
-                    $('#content').scrollLeft(scrollPos - wheelDelta);
-                });
             });
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
             doSearch(detail.queryText);

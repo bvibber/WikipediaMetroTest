@@ -46,11 +46,21 @@
         #content h2, #hub h2 {
             /*break-before:  column;*/
         }
-        #potd {
-            column-span: all;
+        #hub h2 {
+            break-before: column;
         }
-        #potd table {
-            max-width: 768px;
+        #hub h2.first {
+            break-before: inherit;
+        }
+        #potd {
+            /* column-span: all; */
+        }
+        #potd table,
+        #potd tbody,
+        #potd tr,
+        #potd th,
+        #potd td {
+            display: block;
         }
 
         @media all and (min-width: 321px) {
@@ -89,15 +99,14 @@
         <h1 id="title">Wikipedia</h1>
     </div>
     <div class="hub" id="hub">
-        <h2>Picture of the day</h2>
-        <div id="potd"></div>
-
-        <h2>Featured article</h2>
+        <h2 class="first">Featured article</h2>
         <div id="featured"></div>
 
-        <h2>On this day</h2>
+        <h2 >On this day</h2>
         <div id="onthisday"></div>
 
+        <h2>Picture of the day</h2>
+        <div id="potd"></div>
     </div>
     <div class="page" id="reader">
         <div id="content"></div>

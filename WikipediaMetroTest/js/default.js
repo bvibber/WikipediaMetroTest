@@ -25,6 +25,7 @@
                     clearSearch();
                     $('#reader').hide();
                     $('#hub').show();
+                    $('#back').hide();
                 });
                 $('#resultlist').bind('iteminvoked', function (event) {
                     var index = event.originalEvent.detail.itemIndex;
@@ -36,7 +37,7 @@
                     doLoadPage(selected.data.title);
                 });
                 $(window).bind('resize', function () {
-                    sizeContent();
+                    //sizeContent();
                 });
                 $(window).resize();
             });
@@ -108,6 +109,7 @@
 
     function doSearch(query) {
         $('#hub').hide();
+        $('#back').show();
         $('#reader').hide();
         $('#search-results').show();
         $('#title').text(query);
@@ -158,6 +160,7 @@
 
     function doLoadPage(title) {
         $('#hub').hide();
+        $('#back').show();
         clearSearch();
         $('#content').empty();
         $('#title').text(title.replace(/_/g, ' '));
@@ -297,6 +300,7 @@
         $('#hub').show();
         $('#search').hide();
         $('#reader').hide();
+        $('#back').hide();
         fetchFeed('featured', function (html) {
             insertWikiHtml('#featured', html);
             var txt = stripHtmlTags(html);

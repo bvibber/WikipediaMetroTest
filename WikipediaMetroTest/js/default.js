@@ -8,6 +8,9 @@
     WinJS.Namespace.define("SearchResults", {
         itemList: new WinJS.Binding.List([])
     });
+    WinJS.Namespace.define("HubContents", {
+        itemList: new WinJS.Binding.List([])
+    });
 
     app.onactivated = function (eventObject) {
         var detail = eventObject.detail;
@@ -62,6 +65,14 @@
                     var index = event.originalEvent.detail.itemIndex;
                     var selected = SearchResults.itemList.getItem(index);
                     console.log(selected);
+                    if (!selected.data.title) {
+                        throw new Error("bad title");
+                    }
+                    doLoadPage(selected.data.title);
+                });
+                $('#hub-list').bind('iteminvoked', function (event) {
+                    var index = event.originalEvent.detail.itemIndex;
+                    var selected = HubContents.itemList.getItem(index);
                     if (!selected.data.title) {
                         throw new Error("bad title");
                     }
@@ -135,6 +146,9 @@
     });
 
     function stripHtmlTags(html) {
+        if (typeof html !== 'string') {
+            throw new Error('must be string');
+        }
         return html.replace(/<[^>]+>/g, ''); // fixme put in real html parser
     }
 
@@ -273,13 +287,12 @@
             },
             success: function (data, textstatus, request) {
                 var summaries = request.responseXML.getElementsByTagName('summary');
-                var summary = summaries[summaries.length - 1];
-                var html = summary.textContent;
-                if (typeof html === "string") {
-                    callback(html);
-                } else {
-                    throw new Error("Could not get feed contents");
+                var htmlList = [];
+                for (var i = summaries.length - 1; i >= 0; i--) {
+                    var summary = summaries[i];
+                    htmlList.push(summary.textContent);
                 }
+                callback(htmlList);
             }
         });
     }
@@ -342,6 +355,7 @@
         $('#search').hide();
         $('#reader').hide();
         $('#back').hide();
+        /*
         fetchFeed('featured', function (html) {
             insertWikiHtml('#featured', html);
             var txt = stripHtmlTags(html);
@@ -352,6 +366,39 @@
         });
         fetchFeed('onthisday', function (html) {
             insertWikiHtml('#onthisday', html);
+        });*/
+        var list = HubContents.itemList;
+        list.splice(0, list.length);
+        fetchFeed('featured', function (htmlList) {
+            var txt = stripHtmlTags(htmlList[0]);
+            updateLiveTile("Featured Article", txt);
+            htmlList.forEach(function (html) {
+                var $html = $('<div>').html(html),
+                    $links = $html.find('a'),
+                    $imgs = $html.find('img'),
+                    title = '',
+                    image = '';
+                for (var i = 0; i < $links.length; i++) {
+                    var $link = $($links[i]);
+                    if ($link.find('img').length) {
+                        // Skip a link containing an image
+                        continue;
+                    }
+                    title = extractWikiTitle($link.attr('href'));
+                    break;
+                }
+                if ($imgs.length) {
+                    image = $imgs.attr('src');
+                    if (image.substr(0, 2) == '//') {
+                        image = 'https:' + image;
+                    }
+                }
+                list.push({
+                    title: title,
+                    snippet: stripHtmlTags(html).substr(0, 120) + '...',
+                    image: image
+                });
+            });
         });
         $('#hub').append('<div class="column-spacer"></div>');
     }
@@ -381,6 +428,15 @@
                 $(document).unbind('keypress.lightbox');
             }
         });
+    }
+
+    function extractWikiTitle(url) {
+        var wikiMatches = url.match(/\/wiki\/(.*)/);
+        if (wikiMatches) {
+            return decodeURIComponent(wikiMatches[1].replace(/_/g, ' '));
+        } else {
+            throw new Error('not a wiki url');
+        }
     }
 
     app.start();

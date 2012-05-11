@@ -48,6 +48,17 @@
         .win-listview {
             height: 600px;
         }
+        .hubItemTemplate {
+            width: 310px;
+            height: 150px;
+            border: none;
+            background: #eee;
+            padding: 10px;
+        }
+        .hubItemTemplate img {
+            float: right;
+        }
+        
         #content, #hub {
             font-family: Cambria;
             position: absolute;
@@ -115,7 +126,7 @@
 
         @media all and (min-width: 321px) {
             /* Fullscreen or most of screen */
-            #content, #hub {
+            #content {
                 -ms-overflow-x: scroll;
                 -ms-overflow-y: hidden;
                 column-width: 300px;
@@ -135,7 +146,7 @@
         }
         @media all and (max-width: 320px) {
             /* Snapped */
-            #content, #hub {
+            #content {
                 padding:  10px;
                 -ms-overflow-x: hidden;
                 -ms-overflow-y: scroll;
@@ -149,14 +160,20 @@
         <h1 id="title">Wikipedia</h1>
     </div>
     <div class="hub" id="hub">
-        <h2 class="first">Featured article</h2>
-        <div id="featured"></div>
-
-        <h2 >On this day</h2>
-        <div id="onthisday"></div>
-
-        <h2>Picture of the day</h2>
-        <div id="potd"></div>
+        <div id="hubItemTemplate" data-win-control="WinJS.Binding.Template">
+            <div class="hubItemTemplate" style="">
+                <img data-win-bind="src: image" />
+                <h4 data-win-bind="innerText: title" style="font-weight: bold"></h4>
+                <h6 data-win-bind="innerText: snippet"></h6>
+            </div>
+        </div>
+        <div id="hub-list"
+            data-win-control="WinJS.UI.ListView"
+            data-win-options="{
+                itemDataSource: HubContents.itemList.dataSource,
+                itemTemplate: select('#hubItemTemplate')
+            }">
+        </div>
     </div>
     <div class="page" id="reader">
         <div id="content"></div>

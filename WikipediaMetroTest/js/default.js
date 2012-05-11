@@ -21,6 +21,30 @@
             }
             WinJS.UI.processAll().then(function () {
                 initHub();
+                // Handler for links!
+                $(document).on('click', 'a', function (event) {
+                    var url = $(this).attr('href'),
+                        hashMatches = url.match(/^#/),
+                        wikiMatches = url.match(/\/wiki\/(.*)/);
+                    if (hashMatches) {
+                        // no-op
+                        // fixme: check for references
+                        $('.lightbox-bg, .lightbox-fg').remove();
+                    } else if (wikiMatches) {
+                        $('.lightbox-bg, .lightbox-fg').remove();
+                        var title = decodeURIComponent(wikiMatches[1]);
+                        doLoadPage(title);
+                        event.preventDefault();
+                    } else {
+                        if (url.match(/^\/\//)) {
+                            // fixup for protocol-relative links
+                            url = 'https:' + url;
+                        }
+                        var uri = new Windows.Foundation.Uri(url);
+                        Windows.System.Launcher.launchUriAsync(uri);
+                        event.preventDefault();
+                    }
+                });
                 $('#back').click(function () {
                     clearSearch();
                     $('#reader').hide();
@@ -280,8 +304,9 @@
                 // Embedded in another table
                 return;
             }
-            if ($table.hasClass('infobox')) {
-                // Usually we want these inline.
+            if ($table.hasClass('infobox') || $table.hasClass('metadata')) {
+                // Usually we want these inline: infoboxes fit a single column and have important data,
+                // and metadata bits are usually small.
                 return;
             }
             //if ($table.height() > 96) {
@@ -294,27 +319,6 @@
                     .insertAfter($table);
                 $table.detach();
             //}
-        });
-        $div.on('click', 'a', function (event) {
-            var url = $(this).attr('href'),
-                hashMatches = url.match(/^#/),
-                wikiMatches = url.match(/\/wiki\/(.*)/);
-            if (hashMatches) {
-                // no-op
-                // fixme: check for references
-            } else if (wikiMatches) {
-                var title = decodeURIComponent(wikiMatches[1]);
-                doLoadPage(title);
-                event.preventDefault();
-            } else {
-                if (url.match(/^\/\//)) {
-                    // fixup for protocol-relative links
-                    url = 'https:' + url;
-                }
-                var uri = new Windows.Foundation.Uri(url);
-                Windows.System.Launcher.launchUriAsync(uri);
-                event.preventDefault();
-            }
         });
         $(target).append($div);
     }

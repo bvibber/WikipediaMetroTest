@@ -15,6 +15,9 @@
     <script src="/js/default.js"></script>
 
     <style>
+        body {
+            overflow: hidden;
+        }
         .header {
             height:  120px;
             background-color: #f4f1f1;
@@ -72,6 +75,10 @@
             display: block;
         }
 
+        .column-spacer {
+            break-before: column;
+        }
+
         #content ul,
         #content ol {
             padding-left: 16px;
@@ -98,6 +105,7 @@
             background: white;
             overflow-x: hidden;
             overflow-y: scroll;
+            padding: 20px;
         }
 
         @media all and (min-width: 321px) {

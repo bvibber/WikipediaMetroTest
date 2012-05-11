@@ -227,6 +227,7 @@
                     }
                     insertWikiHtml('#content', section.text);
                 });
+                $('#content').append('<div class="column-spacer"></div>');
             }
         });
     }
@@ -304,21 +305,27 @@
                 // Embedded in another table
                 return;
             }
-            if ($table.hasClass('infobox') || $table.hasClass('metadata') || $table.hasClass('ombox')) {
-                // Usually we want these inline: infoboxes fit a single column and have important data,
-                // and metadata bits are usually small.
-                return;
+            var passes = [
+                'infobox',
+                'metadata',
+                'ombox',
+                'cquote'
+            ];
+            for (var i = 0; i < passes.length; i++) {
+                if ($table.hasClass(passes[i])) {
+                    // Usually we want these inline: infoboxes fit a single column and have important data,
+                    // and metadata bits are usually small.
+                    return;
+                }
             }
-            //if ($table.height() > 96) {
-                var $placeholder = $('<button>')
-                    .text('Show table')
-                    .click(function () {
-                        console.log('yeah');
-                        showLightbox($table);
-                    })
-                    .insertAfter($table);
-                $table.detach();
-            //}
+            var $placeholder = $('<button>')
+                .text('Show table')
+                .click(function () {
+                    console.log('yeah');
+                    showLightbox($table);
+                })
+                .insertAfter($table);
+            $table.detach();
         });
         $(target).append($div);
     }
@@ -339,6 +346,7 @@
         fetchFeed('onthisday', function (html) {
             insertWikiHtml('#onthisday', html);
         });
+        $('#hub').append('<div class="column-spacer"></div>');
     }
 
     function sizeContent() {

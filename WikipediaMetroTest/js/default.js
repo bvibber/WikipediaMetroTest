@@ -374,6 +374,13 @@
             $fg.remove();
             $bg.remove();
         });
+        $(document).bind('keypress.lightbox', function (event) {
+            if (event.keyCode == 27) {
+                // ESC
+                $bg.click();
+                $(document).unbind('keypress.lightbox');
+            }
+        });
     }
 
     app.start();

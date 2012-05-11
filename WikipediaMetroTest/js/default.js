@@ -304,7 +304,7 @@
                 // Embedded in another table
                 return;
             }
-            if ($table.hasClass('infobox') || $table.hasClass('metadata')) {
+            if ($table.hasClass('infobox') || $table.hasClass('metadata') || $table.hasClass('ombox')) {
                 // Usually we want these inline: infoboxes fit a single column and have important data,
                 // and metadata bits are usually small.
                 return;

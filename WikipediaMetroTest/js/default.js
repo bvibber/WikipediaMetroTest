@@ -31,7 +31,7 @@
         // Function which returns the data for a group
         function getGroupData(dataItem) {
             return {
-                title: dataItem.group.toUpperCase().charAt(0)
+                title: dataItem.group
             };
         }
     })();

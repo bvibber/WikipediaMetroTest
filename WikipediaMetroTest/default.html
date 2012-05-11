@@ -167,11 +167,21 @@
                 <h6 data-win-bind="innerText: snippet"></h6>
             </div>
         </div>
+        <div id="headerTemplate" data-win-control="WinJS.Binding.Template" style="display: none">
+            <div class="simpleHeaderItem">
+                <h1 data-win-bind="innerText: title"></h1>
+            </div>
+        </div>
         <div id="hub-list"
             data-win-control="WinJS.UI.ListView"
             data-win-options="{
                 itemDataSource: HubContents.groupedList.dataSource,
-                itemTemplate: select('#hubItemTemplate')
+                itemTemplate: select('#hubItemTemplate'),
+                groupHeaderTemplate: headerTemplate,
+                selectionMode: 'none',
+                tapBehavior: 'none',
+                swipeBehavior: 'none',
+                groupDataSource: HubContents.groupedList.groups.dataSource
             }">
         </div>
     </div>

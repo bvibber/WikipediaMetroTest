@@ -12,6 +12,30 @@
         itemList: new WinJS.Binding.List([])
     });
 
+    (function () {
+        // Create the groups for the ListView from the item data and the grouping functions
+        HubContents.groupedList = HubContents.itemList.createGrouped(getGroupKey, getGroupData, compareGroups);
+
+        // Function used to sort the groups
+        // Note: This is similar to default sorting behavior 
+        //   when using WinJS.Binding.List.createGrouped()
+        function compareGroups(left, right) {
+            return left.charCodeAt(0) - right.charCodeAt(0);
+        }
+
+        // Function which returns the group key that an item belongs to
+        function getGroupKey(dataItem) {
+            return dataItem.group.toUpperCase().charAt(0);
+        }
+
+        // Function which returns the data for a group
+        function getGroupData(dataItem) {
+            return {
+                title: dataItem.group.toUpperCase().charAt(0)
+            };
+        }
+    })();
+
     app.onactivated = function (eventObject) {
         var detail = eventObject.detail;
         if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.launch) {
@@ -372,7 +396,7 @@
         fetchFeed('featured', function (htmlList) {
             var txt = stripHtmlTags(htmlList[0]);
             updateLiveTile("Featured Article", txt);
-            htmlList.forEach(function (html) {
+            htmlList.slice(0, 5).forEach(function (html) {
                 var $html = $('<div>').html(html),
                     $links = $html.find('a'),
                     $imgs = $html.find('img'),
@@ -396,8 +420,27 @@
                 list.push({
                     title: title,
                     snippet: stripHtmlTags(html).substr(0, 120) + '...',
-                    image: image
+                    image: image,
+                    group: 'Featured Articles'
                 });
+            });
+        });
+        fetchFeed('onthisday', function (htmlList) {
+            var html = htmlList[0],
+                $html = $('<div>').html(html),
+                $lis = $html.find('li');
+            $lis.each(function () {
+                var $li = $(this),
+                    txt = stripHtmlTags($li.html()),
+                    $link = $li.find('b a'),
+                    title = extractWikiTitle($link.attr('href'));
+                list.push({
+                    title: title,
+                    snippet: txt,
+                    image: '',
+                    group: 'On this day'
+                });
+
             });
         });
         $('#hub').append('<div class="column-spacer"></div>');

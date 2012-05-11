@@ -96,7 +96,7 @@
                 });
                 $('#hub-list').bind('iteminvoked', function (event) {
                     var index = event.originalEvent.detail.itemIndex;
-                    var selected = HubContents.itemList.getItem(index);
+                    var selected = HubContents.groupedList.getItem(index);
                     if (!selected.data.title) {
                         throw new Error("bad title");
                     }

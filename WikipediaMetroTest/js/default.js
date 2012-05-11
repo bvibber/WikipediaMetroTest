@@ -24,11 +24,18 @@
                 // Handler for links!
                 $(document).on('click', 'a', function (event) {
                     var url = $(this).attr('href'),
+                        refMatches = url.match(/^#cite_note/),
                         hashMatches = url.match(/^#/),
                         wikiMatches = url.match(/\/wiki\/(.*)/);
-                    if (hashMatches) {
+                    console.log(url);
+                    if (refMatches) {
+                        //
+                        console.log(url);
+                        var $ref = $(url).clone();
+                        showLightbox($ref, 'small');
+                        event.preventDefault();
+                    } else if (hashMatches) {
                         // no-op
-                        // fixme: check for references
                         $('.lightbox-bg, .lightbox-fg').remove();
                     } else if (wikiMatches) {
                         $('.lightbox-bg, .lightbox-fg').remove();
@@ -355,9 +362,12 @@
         $('#content').css('height', h + 'px');
     }
 
-    function showLightbox(element) {
+    function showLightbox(element, className) {
         var $bg = $('<div>').addClass('lightbox-bg').appendTo('body'),
             $fg = $('<div>').addClass('lightbox-fg').appendTo('body');
+        if (className) {
+            $fg.addClass(className);
+        }
         $fg.append(element);
         $bg.click(function () {
             $(element).detach();

@@ -272,6 +272,29 @@
             }
         });
         */
+        $div.find('table').each(function () {
+            var $table = $(this);
+            var $embedded = $table.parent().closest('table');
+            console.log($embedded.length);
+            if ($embedded.length > 0) {
+                // Embedded in another table
+                return;
+            }
+            if ($table.hasClass('infobox')) {
+                // Usually we want these inline.
+                return;
+            }
+            //if ($table.height() > 96) {
+                var $placeholder = $('<button>')
+                    .text('Show table')
+                    .click(function () {
+                        console.log('yeah');
+                        showLightbox($table);
+                    })
+                    .insertAfter($table);
+                $table.detach();
+            //}
+        });
         $div.on('click', 'a', function (event) {
             var url = $(this).attr('href'),
                 hashMatches = url.match(/^#/),
@@ -318,6 +341,17 @@
         var top = $('#content').position().top;
         var h = $(window).height() - top - 60;
         $('#content').css('height', h + 'px');
+    }
+
+    function showLightbox(element) {
+        var $bg = $('<div>').addClass('lightbox-bg').appendTo('body'),
+            $fg = $('<div>').addClass('lightbox-fg').appendTo('body');
+        $fg.append(element);
+        $bg.click(function () {
+            $(element).detach();
+            $fg.remove();
+            $bg.remove();
+        });
     }
 
     app.start();

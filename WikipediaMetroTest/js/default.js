@@ -53,23 +53,23 @@
                     var url = $(this).attr('href'),
                         refMatches = url.match(/^#cite_note/),
                         hashMatches = url.match(/^#/),
-                        wikiMatches = url.match(/\/wiki\/(.*)/);
-                    console.log(url);
+                        wikiMatches = url.match(/^\/wiki\/(.*)/);
                     if (refMatches) {
-                        //
-                        console.log(url);
+                        // Reference link
                         var $ref = $(url).clone();
                         showLightbox($ref, 'small');
                         event.preventDefault();
                     } else if (hashMatches) {
-                        // no-op
+                        // no-op, but close any lightboxes first
                         $('.lightbox-bg, .lightbox-fg').remove();
                     } else if (wikiMatches) {
+                        // Internal wiki-link
                         $('.lightbox-bg, .lightbox-fg').remove();
                         var title = decodeURIComponent(wikiMatches[1]);
                         doLoadPage(title);
                         event.preventDefault();
                     } else {
+                        // Remote or absolute link
                         if (url.match(/^\/\//)) {
                             // fixup for protocol-relative links
                             url = 'https:' + url;

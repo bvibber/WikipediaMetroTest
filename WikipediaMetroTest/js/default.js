@@ -97,10 +97,9 @@
                 $('#hub-list').bind('iteminvoked', function (event) {
                     var index = event.originalEvent.detail.itemIndex;
                     var selected = HubContents.groupedList.getItem(index);
-                    if (!selected.data.title) {
-                        throw new Error("bad title");
+                    if (selected.data.title) {
+                        doLoadPage(selected.data.title);
                     }
-                    doLoadPage(selected.data.title);
                 });
                 $(window).bind('resize', function () {
                     //sizeContent();
@@ -396,6 +395,14 @@
         });*/
         var list = HubContents.itemList;
         list.splice(0, list.length);
+        // Spacer element
+        list.push({
+            title: '',
+            snippet: '',
+            image: '',
+            group: ' ',
+            style: 'spacer-item'
+        });
         fetchFeed('featured', function (htmlList) {
             var txt = stripHtmlTags(htmlList[0]);
             updateLiveTile("Featured Article", txt);
@@ -424,7 +431,8 @@
                     title: title,
                     snippet: stripHtmlTags(html).substr(0, 120) + '...',
                     image: image,
-                    group: 'Featured Articles'
+                    group: 'Featured Articles',
+                    style: 'featured-item'
                 });
             });
         });
@@ -441,12 +449,26 @@
                     title: title,
                     snippet: txt,
                     image: '',
-                    group: 'On this day'
+                    group: 'On this day',
+                    style: 'onthisday-item'
                 });
-
             });
         });
-        $('#hub').append('<div class="column-spacer"></div>');
+        WinJS.UI.setOptions($('#hub-list')[0].winControl, {
+            layout: {
+                type: WinJS.UI.GridLayout,
+                groupInfo: groupInfo
+            }
+        });
+        // $('#hub-list')[0].winControl.forceLayout();
+    }
+
+    function groupInfo() {
+        return {
+            multiSize: true,
+            slotWidth: 310,
+            slotHeight: 80
+        };
     }
 
     function sizeContent() {

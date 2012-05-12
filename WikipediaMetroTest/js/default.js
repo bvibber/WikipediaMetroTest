@@ -370,6 +370,9 @@
                 })
                 .insertAfter($table);
             $table.detach();
+            // Extracted float-right tables look nicer centered
+            $table.attr('align', 'center');
+            $table.attr('style', $table.attr('style') + '; float: none');
         });
         $(target).append($div);
     }

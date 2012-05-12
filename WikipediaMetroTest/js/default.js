@@ -66,7 +66,12 @@
                         // Internal wiki-link
                         $('.lightbox-bg, .lightbox-fg').remove();
                         var title = decodeURIComponent(wikiMatches[1]);
-                        doLoadPage(title);
+                        if ($(this).hasClass('image')) {
+                            // Image link
+                            showImage(title);
+                        } else {
+                            doLoadPage(title);
+                        }
                         event.preventDefault();
                     } else {
                         // Remote or absolute link
@@ -505,6 +510,32 @@
         } else {
             throw new Error('not a wiki url');
         }
+    }
+
+    function showImage(title) {
+        $.ajax({
+            url: 'https://en.wikipedia.org/w/api.php',
+            data: {
+                action: 'query',
+                titles: title,
+                prop: 'imageinfo',
+                iiprop: 'url',
+                iiurlwidth: 600,
+                iiurlheight: 600,
+                format: 'json'
+            },
+            success: function (data) {
+                var imageinfo;
+                $.each(data.query.pages, function(i, item) {
+                    imageinfo = item.imageinfo[0];
+                });
+                console.log(JSON.stringify(imageinfo));
+                var $img = $('<img>')
+                    .attr('src', imageinfo.thumburl)
+                    .addClass('imageview');
+                showLightbox($img);
+            }
+        });
     }
 
     app.start();

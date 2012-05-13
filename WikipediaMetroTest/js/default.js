@@ -14,6 +14,12 @@
     WinJS.Namespace.define("TocSections", {
         itemList: new WinJS.Binding.List([])
     });
+    TocSections.itemList.dataSource.itemFromDescription = function (desc) {
+        console.log('itemFromDescription hack: ' + JSON.stringify(desc));
+        return WinJS.Promise.wrap({
+            index: 0
+        });
+    };
 
     (function () {
         // Create the groups for the ListView from the item data and the grouping functions
@@ -297,13 +303,12 @@
                         });
                     } else {
                         TocSections.itemList.push({
+                            key: TocSections.itemList.length,
                             title: section.line,
                             style: 'tocitem-' + section.toclevel,
                             element: div
                         });
                     }
-                    section.text = 'X';
-                    console.log(JSON.stringify(section));
                 });
                 $('#content').append('<div class="column-spacer"></div>');
             }
@@ -387,7 +392,6 @@
         $div.find('table').each(function () {
             var $table = $(this);
             var $embedded = $table.parent().closest('table');
-            console.log($embedded.length);
             if ($embedded.length > 0) {
                 // Embedded in another table
                 return;

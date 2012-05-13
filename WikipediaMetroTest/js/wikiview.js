@@ -11,14 +11,49 @@
     setCurrentItem: function (x, y) {
     },
     getCurrentItem: function () {
+        // @fixme handle snapped mode
+        var content = this._wikiview._element,
+            left = content.scrollLeft,
+            children = content.children,
+            selected,
+            selectedIndex;
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (child.offsetLeft >= left) {
+                selected = child;
+                selectedIndex = i;
+                break;
+            }
+        }
+        if (selectedIndex === undefined) {
+            throw new Error('whoops');
+        }
+        return WinJS.Promise.wrap({
+            item: selectedIndex,
+            position: {
+                left: selected.offsetLeft,
+                top: selected.offsetTop,
+                width: selected.offsetWidth,
+                height: selected.offsetHeight
+            }
+        });
     },
     beginZoom: function () {
     },
-    positionItem: function () {
+    positionItem: function (/*@override*/item, position) {
+        var content = this._wikiview._element;
+
+        var section = content.children[item.index];
+        console.log('section.offsetLeft: ' + section.offsetLeft);
+        content.scrollLeft = section.offsetLeft;
     },
     endZoom: function (isCurrentView) {
+        var content = this._wikiview._element;
+        content.style.overflowX = 'overflow';
+        content.style.overflowY = 'hidden';
     },
     handlePointer: function (pointerId) {
+        this._wikiview._element.msSetPointerCapture(pointerId);
     }
 });
 

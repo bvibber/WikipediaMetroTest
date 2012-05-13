@@ -109,8 +109,31 @@ s        }
 
         .tocItemTemplate {
             width: 310px;
-            height: 50px;
+            height: 30px;
+            padding: 10px;
             background: #eee;
+        }
+        .tocitem-0 {
+            font-weight: bold;
+        }
+        .tocitem-1 {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .tocitem-2 {
+            margin-left: 20px;
+        }
+        .tocitem-3 {
+            margin-left: 30px;
+        }
+        .tocitem-4 {
+            margin-left: 40px;
+        }
+        .tocitem-5 {
+            margin-left: 50px;
+        }
+        .tocitem-6 {
+            margin-left: 60px;
         }
         
         #content {
@@ -205,8 +228,8 @@ s        }
         @media all and (min-width: 321px) {
             /* Fullscreen or most of screen */
             #content {
-                -ms-overflow-x: scroll;
-                -ms-overflow-y: hidden;
+                overflow-x: scroll;
+                overflow-y: hidden;
                 column-width: 300px;
                 column-gap: 20px; 
                 column-fill: auto;
@@ -229,8 +252,8 @@ s        }
             /* Snapped */
             #content {
                 padding:  10px;
-                -ms-overflow-x: hidden;
-                -ms-overflow-y: scroll;
+                overflow-x: hidden;
+                overflow-y: scroll;
             }
             .lightbox-fg {
                 left: 10px;
@@ -273,7 +296,7 @@ s        }
     <div class="page" id="reader">
         <div id="tocItemTemplate" data-win-control="WinJS.Binding.Template">
             <div class="tocItemTemplate">
-                <h4 data-win-bind="innerText: title"></h4>
+                <h4 data-win-bind="innerText: title; className: style"></h4>
             </div>
         </div>
         <div id="semanticZoomer"

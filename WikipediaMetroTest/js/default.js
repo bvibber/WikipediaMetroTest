@@ -408,8 +408,7 @@
                 $img.clone().appendTo($placeholder);
             }
             // Extracted float-right tables look nicer centered
-            $table.attr('align', 'center');
-            $table.attr('style', $table.attr('style') + '; float: none');
+            $table.addClass('table-view');
         });
         $(target).append($div);
     }

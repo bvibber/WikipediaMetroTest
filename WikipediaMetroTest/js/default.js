@@ -354,9 +354,9 @@
                 return;
             }
             var passes = [
-                'infobox',
-                'metadata',
-                'ombox',
+                //'infobox',
+                //'metadata',
+                //'ombox',
                 'cquote'
             ];
             for (var i = 0; i < passes.length; i++) {
@@ -366,14 +366,26 @@
                     return;
                 }
             }
+            var txt;
+            if ($table.hasClass('infobox')) {
+                txt = 'Show infobox';
+            } else {
+                txt = 'Show table';
+            }
             var $placeholder = $('<button>')
-                .text('Show table')
+                .addClass('show-table')
+                .append($('<div>').text(txt))
                 .click(function () {
                     console.log('yeah');
                     showLightbox($table);
                 })
                 .insertAfter($table);
             $table.detach();
+            var $img = $table.find('img:eq(0)');
+            if ($img.length) {
+                // If there's a neat image, copy it in!
+                $img.clone().appendTo($placeholder);
+            }
             // Extracted float-right tables look nicer centered
             $table.attr('align', 'center');
             $table.attr('style', $table.attr('style') + '; float: none');

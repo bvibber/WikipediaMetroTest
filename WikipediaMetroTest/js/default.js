@@ -110,6 +110,14 @@
                     //sizeContent();
                 });
                 $(window).resize();
+
+                $('#browserCmd').click(function () {
+                    var $title = $('#title'),
+                        title = $title.text(),
+                        url = articleUrl(title, 'en'),
+                        uri = new Windows.Foundation.Uri(url);
+                    Windows.System.Launcher.launchUriAsync(uri);
+                });
             });
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
             doSearch(detail.queryText);
@@ -286,11 +294,21 @@
     dataTransferManager.addEventListener("datarequested", function (e) {
         var request = e.request;
         var title = document.getElementById('title').textContent;
-        var uri = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(title);
-        request.data.setUri(new Windows.Foundation.Uri(uri));
+        var url = articleUrl(title, 'en');
+        request.data.setUri(new Windows.Foundation.Uri(url));
         request.data.properties.title = title + ' - Wikipedia';
         request.data.properties.description = 'Link to Wikipedia article';
     });
+
+    function articleUrl(title, lang) {
+        if (typeof title != 'string') {
+            throw new Error('bad title input to articleUrl');
+        }
+        if (typeof lang != 'string') {
+            throw new Error('bad lang input to articleUrl');
+        }
+        return 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(title.replace(/ /g, '_'));
+    }
 
 
     // Live tile stuff

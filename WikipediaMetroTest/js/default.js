@@ -530,11 +530,13 @@
             $fg.addClass(className);
         }
         $fg.append(element);
-        $bg.click(function () {
+        var close = function () {
             $(element).detach();
             $fg.remove();
             $bg.remove();
-        });
+        };
+        $fg.click(close);
+        $bg.click(close);
         $(document).bind('keypress.lightbox', function (event) {
             if (event.keyCode == 27) {
                 // ESC

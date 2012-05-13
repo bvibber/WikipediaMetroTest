@@ -369,6 +369,8 @@
             var txt;
             if ($table.hasClass('infobox')) {
                 txt = 'Show infobox';
+            } else if ($table.hasClass('metadata')) {
+                txt = 'Show metadata';
             } else {
                 txt = 'Show table';
             }

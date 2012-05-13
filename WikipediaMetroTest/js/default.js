@@ -89,6 +89,7 @@
                     $('#reader').hide();
                     $('#hub').show();
                     $('#back').hide();
+                    sizeContent();
                 });
                 $('#resultlist').bind('iteminvoked', function (event) {
                     var index = event.originalEvent.detail.itemIndex;
@@ -107,7 +108,7 @@
                     }
                 });
                 $(window).bind('resize', function () {
-                    //sizeContent();
+                    sizeContent();
                 });
                 $(window).resize();
 
@@ -509,9 +510,18 @@
     }
 
     function sizeContent() {
-        var top = $('#content').position().top;
-        var h = $(window).height() - top - 60;
-        $('#content').css('height', h + 'px');
+        var $work, fudge;
+        if ($('#hub').is(':visible')) {
+            $work = $('#hub-list');
+            fudge = 60;
+        } else {
+            $work = $('#content');
+            fudge = 60;
+        }
+        var top = 150;
+        //var top = $work.position().top; // sometimes wrong during switch???
+        var h = $(window).height() - top - fudge;
+        $work.css('height', h + 'px');
     }
 
     function showLightbox(element, className) {

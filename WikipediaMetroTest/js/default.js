@@ -513,7 +513,7 @@
         var $work, fudge;
         if ($('#hub').is(':visible')) {
             $work = $('#hub-list');
-            fudge = 60;
+            fudge = 0;
         } else {
             $work = $('#content');
             fudge = 60;

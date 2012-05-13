@@ -48,40 +48,60 @@
         .win-listview {
             height: 600px;
         }
-        .featured-item {
+        .featured-item,
+        .onthisday-item {
             width: 310px;
             height: 150px;
             border: none;
-            background: #eee;
             padding: 0px;
             overflow: hidden;
         }
-        .featured-item h6,
-        .featured-item h4,
-        .featured-item img {
-            padding: 10px;
-            padding-bottom: 0;
+        .featured-item {
+            background: #eef;
+            border: solid 1px #bbe;
         }
-        .featured-item img {
-            float: right;
-        }
-
         .onthisday-item {
-            width: 310px;
-            height: 100px;
-            border: none;
             background: #efe;
-            overflow: hidden;
+            border: solid 1px #beb;
         }
-        .onthisday-item h6,
+        .featured-item h4,
         .onthisday-item h4 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
             padding: 10px;
-            padding-bottom: 0;
+        }
+        .featured-item h4 {
+            background: #bbe;
+        }
+        .onthisday-item h4 {
+            background: #beb;
+        }
+        .featured-item h6,
+        .onthisday-item h6 {
+            position: absolute;
+            top: 0;
+            bottom: 40px;
+            left: 0;
+            padding: 10px;
+        }
+        .featured-item h6 {
+            width: 150px;
+s        }
+        .onthisday-item h6 {
+            right: 0;
+        }
+        .featured-item img {
+            position: absolute;
+            top: 1px;
+            bottom: 40px;
+            right: 1px;
         }
         .onthisday-item img {
             display: none;
         }
-
         .spacer-item img {
             display: none;
         }
@@ -200,8 +220,8 @@
         <div id="hubItemTemplate" data-win-control="WinJS.Binding.Template">
             <div style="width: 310px; height: 150px;" data-win-bind="className: style">
                 <img data-win-bind="src: image" />
-                <h4 data-win-bind="innerText: title" style="font-weight: bold"></h4>
                 <h6 data-win-bind="innerText: snippet"></h6>
+                <h4 data-win-bind="innerText: title" style="font-weight: bold"></h4>
             </div>
         </div>
         <div id="headerTemplate" data-win-control="WinJS.Binding.Template" style="display: none">

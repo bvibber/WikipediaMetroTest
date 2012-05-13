@@ -11,6 +11,9 @@
     WinJS.Namespace.define("HubContents", {
         itemList: new WinJS.Binding.List([])
     });
+    WinJS.Namespace.define("TocSections", {
+        itemList: new WinJS.Binding.List([])
+    });
 
     (function () {
         // Create the groups for the ListView from the item data and the grouping functions
@@ -280,11 +283,27 @@
 
                 */
                 $('#content').empty();
+                TocSections.itemList.splice(0, TocSections.itemList.length); // clear
                 data.mobileview.sections.forEach(function (section) {
                     if (!section.text) {
                         return;
                     }
-                    insertWikiHtml('#content', section.text);
+                    var div = insertWikiHtml('#content', section.text);
+                    if (section.id == 0) {
+                        TocSections.itemList.push({
+                            title: title,
+                            style: 'tocitem-0',
+                            element: div
+                        });
+                    } else {
+                        TocSections.itemList.push({
+                            title: section.line,
+                            style: 'tocitem-' + section.toclevel,
+                            element: div
+                        });
+                    }
+                    section.text = 'X';
+                    console.log(JSON.stringify(section));
                 });
                 $('#content').append('<div class="column-spacer"></div>');
             }
@@ -412,6 +431,7 @@
             $table.addClass('table-view');
         });
         $(target).append($div);
+        return $div[0];
     }
 
     function initHub() {

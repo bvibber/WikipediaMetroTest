@@ -13,6 +13,7 @@
     <link href="/css/default.css" rel="stylesheet">
     <script src="/js/jquery-1.7.2.js"></script>
     <script src="/js/default.js"></script>
+    <script src="/js/wikiview.js"></script>
 
     <style>
         body {
@@ -104,6 +105,12 @@ s        }
         }
         .spacer-item img {
             display: none;
+        }
+
+        .tocItemTemplate {
+            width: 310px;
+            height: 50px;
+            background: #eee;
         }
         
         #content {
@@ -264,7 +271,28 @@ s        }
         </div>
     </div>
     <div class="page" id="reader">
-        <div id="content"></div>
+        <div id="tocItemTemplate" data-win-control="WinJS.Binding.Template">
+            <div class="tocItemTemplate">
+                <h4 data-win-bind="innerText: title"></h4>
+            </div>
+        </div>
+        <div id="semanticZoomer"
+            data-win-control="WinJS.UI.SemanticZoom"
+            data-win-options="{ zoomFactor: 0.5, initiallyZoomedOut: false }"
+            style="height: 600px"
+        >
+            <div id="content"
+                data-win-control="WikiControls.WikiView"
+                data-win-options="{}"
+            ></div>
+            <div id="toc"
+                data-win-control="WinJS.UI.ListView"
+                data-win-options="{
+                    itemDataSource : TocSections.itemList.dataSource,
+                    itemTemplate: select('#tocItemTemplate')
+                }">
+            </div>
+        </div>
     </div>
     <div class="page">
         <div id="search-results">

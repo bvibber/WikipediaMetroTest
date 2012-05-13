@@ -60,6 +60,7 @@
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
     <Content Include="js\jquery-1.7.2.js" />
+    <Content Include="js\wikiview.js" />
     <Content Include="win8-tile-small.png" />
     <Content Include="win8-tile.png" />
     <Content Include="win8-wide-tile.png" />

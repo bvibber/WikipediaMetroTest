@@ -297,7 +297,7 @@
                     var div = insertWikiHtml('#content', section.text);
                     if (section.id == 0) {
                         TocSections.itemList.push({
-                            title: title,
+                            title: title.replace(/_/g, ' '),
                             style: 'tocitem-0',
                             element: div
                         });

@@ -47,7 +47,7 @@
 
         var section = content.children[item.index];
         console.log('section.offsetLeft: ' + section.offsetLeft);
-        content.scrollLeft = section.offsetLeft;
+        content.scrollLeft = section.offsetLeft - 10;
     },
     endZoom: function (isCurrentView) {
         var content = this._wikiview._element;

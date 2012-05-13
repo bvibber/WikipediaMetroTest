@@ -7,6 +7,8 @@
         return "horizontal";
     },
     configureForZoom: function (isZoomedOut, isCurrentView, triggerZoom, prefetchedPages) {
+        content.style.overflowX = 'overflow';
+        content.style.overflowY = 'hidden';
     },
     setCurrentItem: function (x, y) {
     },

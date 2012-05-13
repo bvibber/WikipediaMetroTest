@@ -539,12 +539,13 @@
             $work = $('#hub-list');
             fudge = 0;
         } else {
-            $work = $('#content');
+            $work = $('#content, #toc');
             fudge = 60;
         }
         var top = 150;
         //var top = $work.position().top; // sometimes wrong during switch???
         var h = $(window).height() - top - fudge;
+        $('#semanticZoomer').css('height', $(window).height() - top);
         $work.css('height', h + 'px');
     }
 

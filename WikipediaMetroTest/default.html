@@ -170,11 +170,6 @@ s        }
             overflow-y: scroll;
             padding: 20px;
         }
-        .lightbox-fg.small {
-            margin: auto;
-            height: 200px;
-            width: 400px;
-        }
 
         .imageview {
             display: block;
@@ -185,6 +180,11 @@ s        }
             display: block;
             width: 100%;
             text-align: center;
+        }
+
+        .lightbox-fg.small {
+            margin: auto;
+            height: 200px;
         }
 
         @media all and (min-width: 321px) {
@@ -206,6 +206,9 @@ s        }
                 /* @fixme need to add more padding inside */
                 margin-right: -120px;
             }
+            .lightbox-fg.small {
+                width: 400px;
+            }
         }
         @media all and (max-width: 320px) {
             /* Snapped */
@@ -213,6 +216,10 @@ s        }
                 padding:  10px;
                 -ms-overflow-x: hidden;
                 -ms-overflow-y: scroll;
+            }
+            .lightbox-fg {
+                left: 10px;
+                right: 10px;
             }
         }
     </style>

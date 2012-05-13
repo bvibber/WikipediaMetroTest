@@ -138,7 +138,7 @@
     var searchPane = Windows.ApplicationModel.Search.SearchPane.getForCurrentView();
     searchPane.addEventListener("querysubmitted", function (e) {
         console.log('querysubmitted', e);
-        doSearch(e.queryText);
+        doLoadPage(e.queryText);
     });
     var request;
     // Register to Handle Suggestion Request
@@ -259,7 +259,8 @@
             },
             success: function (data) {
                 if (data.error) {
-                    $('#title').text('error');
+                    // No exact match? Go do a search.
+                    doSearch(title);
                     return;
                 }
                 /*

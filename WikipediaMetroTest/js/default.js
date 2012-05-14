@@ -468,7 +468,7 @@
         fetchFeed('featured', function (htmlList) {
             var txt = stripHtmlTags(htmlList[0]);
             updateLiveTile("Featured Article", txt);
-            htmlList.slice(0, 5).forEach(function (html) {
+            htmlList.slice(0, 6).forEach(function (html, n) {
                 var $html = $('<div>').html(html),
                     $links = $html.find('a'),
                     $imgs = $html.find('img'),
@@ -483,18 +483,23 @@
                     title = extractWikiTitle($link.attr('href'));
                     break;
                 }
+                var style = 'featured-item';
+                if (n == 0) {
+                    style += ' large';
+                }
                 if ($imgs.length) {
                     image = $imgs.attr('src');
                     if (image.substr(0, 2) == '//') {
                         image = 'https:' + image;
                     }
+                    style += ' has-image';
                 }
                 list.push({
                     title: title,
-                    snippet: stripHtmlTags(html).substr(0, 120) + '...',
+                    snippet: stripHtmlTags(html).substr(0, 140) + '...',
                     image: image,
                     group: 'Featured Articles',
-                    style: 'featured-item'
+                    style: style
                 });
             });
         });
@@ -523,14 +528,6 @@
             }
         });
         // $('#hub-list')[0].winControl.forceLayout();
-    }
-
-    function groupInfo() {
-        return {
-            multiSize: true,
-            slotWidth: 310,
-            slotHeight: 80
-        };
     }
 
     function sizeContent() {
@@ -609,3 +606,12 @@
 
     app.start();
 })();
+
+
+function groupInfo() {
+    return {
+        enableCellSpanning: true,
+        cellWidth: 100,
+        cellHeight: 50
+    };
+}

@@ -51,50 +51,79 @@
         }
         .featured-item,
         .onthisday-item {
-            width: 310px;
-            height: 150px;
+            width: 200px;
+            height: 100px;
             border: none;
             padding: 0px;
             overflow: hidden;
         }
         .featured-item {
+            width: 210px;
+            height: 100px;
             background: #eef;
-            border: solid 1px #bbe;
+        }
+        .featured-item.large {
+            width: 420px;
+            height: 350px;
         }
         .onthisday-item {
+            height: 100px;
+            width: 330px;
             background: #efe;
-            border: solid 1px #beb;
-        }
-        .featured-item h4,
-        .onthisday-item h4 {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 20px;
-            padding: 10px;
         }
         .featured-item h4 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            bottom: 0;
             background: #bbe;
+            font-size: 12px;
+            padding: 6px;
+        }
+        .featured-item.large h4 {
+            height: 20px;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
         }
         .onthisday-item h4 {
-            background: #beb;
+            display: none;
         }
-        .featured-item h6,
-        .onthisday-item h6 {
+        .featured-item h6 {
+            display: none;
+        }
+        .featured-item.large h6 {
+            display: block;
             position: absolute;
             top: 0;
             bottom: 40px;
             left: 0;
             padding: 10px;
         }
+        .onthisday-item h6 {
+            position: absolute;
+            top: 0;
+            bottom: 0px;
+            left: 0;
+            padding: 10px;
+            border: solid 1px #beb;
+        }
         .featured-item h6 {
             width: 150px;
-s        }
+        }
         .onthisday-item h6 {
             right: 0;
         }
         .featured-item img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: auto;
+            height: 98px;
+            border: solid 1px #bbe;
+        }
+        .featured-item.large img {
             position: absolute;
             top: 1px;
             bottom: 40px;
@@ -102,6 +131,10 @@ s        }
         }
         .onthisday-item img {
             display: none;
+        }
+        .spacer-item {
+            width: 60px;
+            height: 1px;
         }
         .spacer-item img {
             display: none;
@@ -269,10 +302,10 @@ s        }
     </div>
     <div class="hub" id="hub">
         <div id="hubItemTemplate" data-win-control="WinJS.Binding.Template">
-            <div style="width: 310px; height: 150px;" data-win-bind="className: style">
-                <img data-win-bind="src: image" />
+            <div data-win-bind="className: style">
+                <img src="#" data-win-bind="src: image" />
                 <h6 data-win-bind="innerText: snippet"></h6>
-                <h4 data-win-bind="innerText: title" style="font-weight: bold"></h4>
+                <h4 data-win-bind="innerText: title"></h4>
             </div>
         </div>
         <div id="headerTemplate" data-win-control="WinJS.Binding.Template" style="display: none">

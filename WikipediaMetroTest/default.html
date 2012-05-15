@@ -49,24 +49,28 @@
         .win-listview {
             height: 600px;
         }
-        .featured-item,
-        .onthisday-item {
-            width: 310px;
+        .featured-item {
+            width: 288px;
             height: 150px;
             border: none;
             padding: 0px;
             overflow: hidden;
-        }
-        .featured-item {
             background: #eef;
             border: solid 1px #bbe;
         }
         .onthisday-item {
+            width: 288px;
+            height: 78px;
+            border: none;
+            padding: 0px;
+            overflow: hidden;
             background: #efe;
             border: solid 1px #beb;
         }
-        .featured-item h4,
         .onthisday-item h4 {
+            display: none;
+        }
+        .featured-item h4 {
             position: absolute;
             bottom: 0;
             left: 0;
@@ -80,8 +84,14 @@
         .onthisday-item h4 {
             background: #beb;
         }
-        .featured-item h6,
         .onthisday-item h6 {
+            position: absolute;
+            top: 0;
+            bottom: 0px;
+            left: 0;
+            padding: 10px;
+        }
+        .featured-item h6 {
             position: absolute;
             top: 0;
             bottom: 40px;

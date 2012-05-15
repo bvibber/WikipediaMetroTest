@@ -598,6 +598,6 @@ function groupInfo() {
     return {
         enableCellSpanning: true,
         cellWidth: 50,
-        cellHeight: 50
+        cellHeight: 80
     };
 }

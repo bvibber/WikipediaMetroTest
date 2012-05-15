@@ -70,30 +70,28 @@
     padding: 0px;
     overflow: hidden;
     background: #eef;
-    border: solid 1px #bbe;
 }
 .featured-item h4 {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
     height: 20px;
     padding: 10px;
-}
-.featured-item h4 {
-    background: #bbe;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    
+    font-size: 14px;
 }
 .featured-item h6 {
     display: none;
 }
-.featured-item h6 {
-    width: 150px;
-}
 .featured-item img {
     position: absolute;
-    top: 1px;
-    bottom: 40px;
-    right: 1px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
 }
 
 .onthisday-item {

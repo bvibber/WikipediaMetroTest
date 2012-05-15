@@ -109,7 +109,8 @@
                     }
                 });
                 $('#back').click(function () {
-                    doShowHub();
+                    //doShowHub();
+                    doGoBack();
                 });
                 $('#resultlist').bind('iteminvoked', function (event) {
                     var index = event.originalEvent.detail.itemIndex;
@@ -333,6 +334,7 @@
             success: function (data) {
                 if (data.error) {
                     // No exact match? Go do a search.
+                    state.pop(); // skip this one in history
                     doSearch(lang, title);
                     return;
                 }
@@ -507,6 +509,7 @@
             lang: 'en',
             title: ''
         });
+        $('#title').text('Wikipedia');
         $('#hub').show();
         $('#search').hide();
         $('#reader').hide();
@@ -663,6 +666,21 @@
                 showLightbox($img);
             }
         });
+    }
+
+    function doGoBack() {
+        var discard = state.pop(),
+            redo = state.pop();
+        if (redo.title == '') {
+            if ('search' in redo) {
+                doSearch(redo.lang, redo.search);
+            } else {
+                doShowHub();
+            }
+        } else {
+            doLoadPage(redo.lang, redo.title);
+        }
+
     }
 
     app.start();

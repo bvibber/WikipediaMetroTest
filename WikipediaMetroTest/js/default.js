@@ -128,6 +128,51 @@
                         uri = new Windows.Foundation.Uri(url);
                     Windows.System.Launcher.launchUriAsync(uri);
                 });
+
+                $('#readInCmd').click(function () {
+                    var $title = $('#title'),
+                        title = $title.text(),
+                        url = 'https://en.wikipedia.org/w/api.php';
+                    $.ajax({
+                        url: url,
+                        data: {
+                            action: 'query',
+                            prop: 'langlinks',
+                            titles: title,
+                            lllimit: 250,
+                            format: 'json'
+                        },
+                        success: function (data) {
+                            var div = document.createElement('div'),
+                                langlinks;
+                            $.each(data.query.pages, function (i, page) {
+                                langlinks = page.langlinks;
+                            });
+                            if (!langlinks) {
+                                throw new Error("langlinks barfed");
+                            } else {
+                                langlinks.forEach(function (langlink) {
+                                    var lang = langlink.lang,
+                                        target = langlink['*'],
+                                        label = target + ' (' + lang + ')',
+                                        button = document.createElement('button'),
+                                        command = new WinJS.UI.MenuCommand(button, {
+                                            label: label
+                                        });
+                                    command.addEventListener('click', function () {
+                                        console.log(label);
+                                    });
+                                    div.appendChild(button);
+                                });
+                            }
+                            $('body').append(div);
+                            var menu = new WinJS.UI.Menu(div, {
+                                anchor: $('#readInCmd')[0]
+                            });
+                            menu.show();
+                        }
+                    });
+                });
             });
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
             doSearch(detail.queryText);

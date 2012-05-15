@@ -21,6 +21,20 @@
         });
     };
 
+    // State stack!
+    var state = {
+        stack: [],
+        current: function () {
+            return state.stack[state.stack.length - 1];
+        },
+        push: function (newState) {
+            state.stack.push(newState);
+        },
+        pop: function () {
+            return state.stack.pop();
+        }
+    };
+
     (function () {
         // Create the groups for the ListView from the item data and the grouping functions
         HubContents.groupedList = HubContents.itemList.createGrouped(getGroupKey, getGroupData, compareGroups);
@@ -74,12 +88,13 @@
                     } else if (wikiMatches) {
                         // Internal wiki-link
                         $('.lightbox-bg, .lightbox-fg').remove();
-                        var title = decodeURIComponent(wikiMatches[1]);
+                        var lang = state.current().lang,
+                            title = decodeURIComponent(wikiMatches[1]);
                         if ($(this).hasClass('image')) {
                             // Image link
                             showImage(title);
                         } else {
-                            doLoadPage(title);
+                            doLoadPage(lang, title);
                         }
                         event.preventDefault();
                     } else {
@@ -94,11 +109,7 @@
                     }
                 });
                 $('#back').click(function () {
-                    clearSearch();
-                    $('#reader').hide();
-                    $('#hub').show();
-                    $('#back').hide();
-                    sizeContent();
+                    doShowHub();
                 });
                 $('#resultlist').bind('iteminvoked', function (event) {
                     var index = event.originalEvent.detail.itemIndex;
@@ -107,13 +118,13 @@
                     if (!selected.data.title) {
                         throw new Error("bad title");
                     }
-                    doLoadPage(selected.data.title);
+                    doLoadPage(state.current().lang, selected.data.title);
                 });
                 $('#hub-list').bind('iteminvoked', function (event) {
                     var index = event.originalEvent.detail.itemIndex;
                     var selected = HubContents.groupedList.getItem(index);
                     if (selected.data.title) {
-                        doLoadPage(selected.data.title);
+                        doLoadPage(state.current().lang, selected.data.title);
                     }
                 });
                 $(window).bind('resize', function () {
@@ -130,9 +141,9 @@
                 });
 
                 $('#readInCmd').click(function () {
-                    var $title = $('#title'),
-                        title = $title.text(),
-                        url = 'https://en.wikipedia.org/w/api.php';
+                    var title = state.current().title,
+                        lang = state.current().lang,
+                        url = 'https://' + lang + '.wikipedia.org/w/api.php';
                     $.ajax({
                         url: url,
                         data: {
@@ -149,7 +160,7 @@
                                 langlinks = page.langlinks;
                             });
                             if (!langlinks) {
-                                throw new Error("langlinks barfed");
+                                //throw new Error("langlinks barfed");
                             } else {
                                 langlinks.forEach(function (langlink) {
                                     var lang = langlink.lang,
@@ -160,7 +171,7 @@
                                             label: label
                                         });
                                     command.addEventListener('click', function () {
-                                        console.log(label);
+                                        doLoadPage(lang, target);
                                     });
                                     div.appendChild(button);
                                 });
@@ -192,7 +203,7 @@
     var searchPane = Windows.ApplicationModel.Search.SearchPane.getForCurrentView();
     searchPane.addEventListener("querysubmitted", function (e) {
         console.log('querysubmitted', e);
-        doLoadPage(e.queryText);
+        doLoadPage('en', e.queryText);
     });
     var request;
     // Register to Handle Suggestion Request
@@ -233,7 +244,7 @@
     // Handle the selection of a Result Suggestion for Scenario 6
     searchPane.addEventListener("resultsuggestionchosen", function (e) {
         console.log('search', e);
-        doLoadPage(e.queryText);
+        doLoadPage(state.current().lang, e.queryText);
     });
 
     function stripHtmlTags(html) {
@@ -295,7 +306,11 @@
         $('#title').text('Wikipedia');
     }
 
-    function doLoadPage(title) {
+    function doLoadPage(lang, title) {
+        state.push({
+            lang: lang,
+            title: title
+        });
         $('#hub').hide();
         $('#back').show();
         clearSearch();
@@ -305,7 +320,7 @@
         sizeContent();
 
         $.ajax({
-            url: 'https://en.wikipedia.org/w/api.php',
+            url: 'https://' + lang + '.wikipedia.org/w/api.php',
             data: {
                 action: 'mobileview',
                 page: title,
@@ -484,11 +499,20 @@
         return $div[0];
     }
 
-    function initHub() {
+    function doShowHub(lang) {
+        state.push({
+            lang: 'en',
+            title: ''
+        });
         $('#hub').show();
         $('#search').hide();
         $('#reader').hide();
         $('#back').hide();
+        sizeContent();
+    }
+
+    function initHub() {
+        doShowHub();
         /*
         fetchFeed('featured', function (html) {
             insertWikiHtml('#featured', html);

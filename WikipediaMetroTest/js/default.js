@@ -195,7 +195,8 @@
         if (typeof html !== 'string') {
             throw new Error('must be string');
         }
-        return html.replace(/<[^>]+>/g, ''); // fixme put in real html parser
+        //return html.replace(/<[^>]+>/g, ''); // fixme put in real html parser
+        return $('<div>').html(html).text();
     }
 
     function doSearch(query) {

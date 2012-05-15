@@ -384,8 +384,10 @@
     // Outgoing sharing
     var dataTransferManager = Windows.ApplicationModel.DataTransfer.DataTransferManager.getForCurrentView();
     dataTransferManager.addEventListener("datarequested", function (e) {
-        var request = e.request;
-        var url = articleUrl(state.current().lang, state.current().title);
+        var request = e.request,
+            title = state.current().title,
+            lang = state.current().lang,
+            url = articleUrl(state.current().lang, title);
         request.data.setUri(new Windows.Foundation.Uri(url));
         request.data.properties.title = title + ' - Wikipedia';
         request.data.properties.description = 'Link to Wikipedia article';

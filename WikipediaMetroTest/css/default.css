@@ -31,15 +31,19 @@
 .win-listview {
     height: 600px;
 }
-.primary-item {
-    width: 590px;
-    height: 350px;
+.photo-item {
+    width: 290px;
+    height: 170px;
     border: none;
     padding: 0;
     overflow: hidden;
     background: #eef;
 }
-.primary-item h4 {
+.photo-item.large {
+    width: 590px;
+    height: 350px;
+}
+.photo-item h4 {
     position: absolute;
     top: 0;
     left: 0;
@@ -51,10 +55,10 @@
     
     font-size: 14px;
 }
-.primary-item h6 {
+.photo-item h6 {
     display: none;
 }
-.primary-item img {
+.photo-item img {
     position: absolute;
     top: 0;
     left: 0;
@@ -84,13 +88,16 @@
     font-size: 14px;
 }
 .featured-item h6 {
-    display: none;
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    width: 120px;
 }
 .featured-item img {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    bottom: 0;
+    right: 0;
+    width: 50%;
     height: auto;
 }
 

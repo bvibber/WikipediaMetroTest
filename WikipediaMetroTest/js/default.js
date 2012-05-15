@@ -573,16 +573,12 @@
                 var imageid = ("img" + Math.random()).replace('.', '');
                 list.push({
                     title: title,
-                    snippet: stripHtmlTags(html).substr(0, 120) + '...',
+                    snippet: stripHtmlTags(html).substr(0, 100) + '...',
                     image: image,
                     imageid: imageid,
                     group: 'Featured articles',
                     style: 'featured-item'
                 });
-                
-                //fetchImage(state.current().lang, image, 600, 600, function (img) {
-                //    $('#' + imageid).attr('src', img);
-                //});
             });
         });
         fetchFeed('potd', function (htmlList) {
@@ -610,11 +606,11 @@
                 var imageid = ("img" + Math.random()).replace('.', '');
                 list.push({
                     title: title,
-                    snippet: stripHtmlTags(html).substr(0, 120) + '...',
+                    snippet: '',
                     image: image,
                     imageid: imageid,
                     group: 'Featured pictures',
-                    style: (index == 0) ? 'primary-item' : 'featured-item'
+                    style: (index == 0) ? 'photo-item large' : 'photo-item'
                 });
 
                 //fetchImage(state.current().lang, image, 600, 600, function (img) {

@@ -92,7 +92,7 @@
                             title = decodeURIComponent(wikiMatches[1]);
                         if ($(this).hasClass('image')) {
                             // Image link
-                            showImage(title);
+                            showImage(lang, title);
                         } else {
                             doLoadPage(lang, title);
                         }
@@ -133,9 +133,7 @@
                 $(window).resize();
 
                 $('#browserCmd').click(function () {
-                    var $title = $('#title'),
-                        title = $title.text(),
-                        url = articleUrl(title, 'en'),
+                    var url = articleUrl(state.current().lang, state.current().title),
                         uri = new Windows.Foundation.Uri(url);
                     Windows.System.Launcher.launchUriAsync(uri);
                 });
@@ -186,7 +184,7 @@
                 });
             });
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
-            doSearch(detail.queryText);
+            doSearch(state.current().lang, detail.queryText);
         }
     };
     
@@ -203,7 +201,7 @@
     var searchPane = Windows.ApplicationModel.Search.SearchPane.getForCurrentView();
     searchPane.addEventListener("querysubmitted", function (e) {
         console.log('querysubmitted', e);
-        doLoadPage('en', e.queryText);
+        doLoadPage(state.current().lang, e.queryText);
     });
     var request;
     // Register to Handle Suggestion Request
@@ -215,7 +213,7 @@
         var deferral = suggestionRequest.getDeferral();
 
         // This refers to a local package file that contains a sample JSON response. You can update the Uri to a service that supports this standard in order to see suggestions come from a web service.  In order for the updated Uri to work it must also be included in the ApplicationContentUriRules in the manifest
-        var suggestionUri = "https://en.wikipedia.org/w/api.php?action=opensearch&namespace=0&suggest=&search=";
+        var suggestionUri = "https://" + state.current().lang + ".wikipedia.org/w/api.php?action=opensearch&namespace=0&suggest=&search=";
         // If you are using a webservice,the query string should be encoded into the URI. See example below:
         suggestionUri += encodeURIComponent(queryText);
 
@@ -255,13 +253,18 @@
         return $('<div>').html(html).text();
     }
 
-    function doSearch(query) {
+    function doSearch(lang, query) {
+        state.push({
+            lang: lang,
+            title: '',
+            search: query
+        });
         $('#hub').hide();
         $('#back').show();
         $('#reader').hide();
         $('#search-results').show();
         $('#title').text(query);
-        var url = 'https://en.wikipedia.org/w/api.php';
+        var url = 'https://' + lang + '.wikipedia.org/w/api.php';
         $.ajax({
             url: url,
             data: {
@@ -330,7 +333,7 @@
             success: function (data) {
                 if (data.error) {
                     // No exact match? Go do a search.
-                    doSearch(title);
+                    doSearch(lang, title);
                     return;
                 }
                 /*
@@ -380,14 +383,13 @@
     var dataTransferManager = Windows.ApplicationModel.DataTransfer.DataTransferManager.getForCurrentView();
     dataTransferManager.addEventListener("datarequested", function (e) {
         var request = e.request;
-        var title = document.getElementById('title').textContent;
-        var url = articleUrl(title, 'en');
+        var url = articleUrl(state.current().lang, state.current().title);
         request.data.setUri(new Windows.Foundation.Uri(url));
         request.data.properties.title = title + ' - Wikipedia';
         request.data.properties.description = 'Link to Wikipedia article';
     });
 
-    function articleUrl(title, lang) {
+    function articleUrl(lang, title) {
         if (typeof title != 'string') {
             throw new Error('bad title input to articleUrl');
         }
@@ -411,8 +413,9 @@
         Notifications.TileUpdateManager.createTileUpdaterForApplication().update(tileNotification);
     }
     function fetchFeed(feed, callback) {
+        var lang = state.current().lang;
         $.ajax({
-            url: "https://en.wikipedia.org/w/api.php",
+            url: "https://" + lang + ".wikipedia.org/w/api.php",
             data: {
                 action: 'featuredfeed',
                 feed: feed,
@@ -636,9 +639,9 @@
         }
     }
 
-    function showImage(title) {
+    function showImage(lang, title) {
         $.ajax({
-            url: 'https://en.wikipedia.org/w/api.php',
+            url: 'https://' + lang + '.wikipedia.org/w/api.php',
             data: {
                 action: 'query',
                 titles: title,

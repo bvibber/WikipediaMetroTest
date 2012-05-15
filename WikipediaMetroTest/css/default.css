@@ -169,7 +169,7 @@
 
 #content ul,
 #content ol {
-    padding-left: 16px;
+    padding-left: 32px; /* need space for triple-digit ref lists */
 }
 #content .reflist {
     column-width: auto !important;

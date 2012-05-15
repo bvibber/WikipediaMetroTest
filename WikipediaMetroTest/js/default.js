@@ -546,7 +546,7 @@
         fetchFeed('featured', function (htmlList) {
             var txt = stripHtmlTags(htmlList[0]);
             updateLiveTile("Featured Article", txt);
-            htmlList.slice(0, 5).forEach(function (html) {
+            htmlList.slice(0, 5).forEach(function (html, index) {
                 var $html = $('<div>').html(html),
                     $links = $html.find('a'),
                     $imgs = $html.find('img'),
@@ -567,13 +567,19 @@
                         image = 'https:' + image;
                     }
                 }
+                var imageid = ("img" + Math.random()).replace('.', '');
                 list.push({
                     title: title,
                     snippet: stripHtmlTags(html).substr(0, 120) + '...',
                     image: image,
+                    imageid: imageid,
                     group: 'Featured Articles',
-                    style: 'featured-item'
+                    style: (index == 0) ? 'primary-item' : 'featured-item'
                 });
+                
+                //fetchImage(state.current().lang, image, 600, 600, function (img) {
+                //    $('#' + imageid).attr('src', img);
+                //});
             });
         });
         fetchFeed('onthisday', function (htmlList) {

@@ -516,21 +516,6 @@
                 });
             });
         });
-        WinJS.UI.setOptions($('#hub-list')[0].winControl, {
-            layout: {
-                type: WinJS.UI.GridLayout,
-                groupInfo: groupInfo
-            }
-        });
-        // $('#hub-list')[0].winControl.forceLayout();
-    }
-
-    function groupInfo() {
-        return {
-            multiSize: true,
-            slotWidth: 310,
-            slotHeight: 80
-        };
     }
 
     function sizeContent() {
@@ -609,3 +594,10 @@
 
     app.start();
 })();
+function groupInfo() {
+    return {
+        enableCellSpanning: true,
+        cellWidth: 50,
+        cellHeight: 50
+    };
+}

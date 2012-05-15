@@ -549,7 +549,7 @@
         fetchFeed('featured', function (htmlList) {
             var txt = stripHtmlTags(htmlList[0]);
             updateLiveTile("Featured Article", txt);
-            htmlList.slice(0, 6).forEach(function (html, index) {
+            htmlList.slice(0, 8).forEach(function (html, index) {
                 var $html = $('<div>').html(html),
                     $links = $html.find('a'),
                     $imgs = $html.find('img'),
@@ -577,7 +577,7 @@
                     image: image,
                     imageid: imageid,
                     group: 'Featured articles',
-                    style: 'featured-item'
+                    style: (index == 0) ? 'featured-item large' : 'featured-item'
                 });
             });
         });

@@ -43,12 +43,15 @@
         // Note: This is similar to default sorting behavior 
         //   when using WinJS.Binding.List.createGrouped()
         function compareGroups(left, right) {
-            return left.charCodeAt(0) - right.charCodeAt(0);
+            var sort = ['Featured pictures', 'Featured articles', 'On this day'];
+            var n = sort.indexOf(left),
+                n2 = sort.indexOf(right);
+            return n - n2;
         }
 
         // Function which returns the group key that an item belongs to
         function getGroupKey(dataItem) {
-            return dataItem.group.toUpperCase().charAt(0);
+            return dataItem.group;
         }
 
         // Function which returns the data for a group
@@ -573,10 +576,47 @@
                     snippet: stripHtmlTags(html).substr(0, 120) + '...',
                     image: image,
                     imageid: imageid,
-                    group: 'Featured Articles',
-                    style: (index == 0) ? 'primary-item' : 'featured-item'
+                    group: 'Featured articles',
+                    style: 'featured-item'
                 });
                 
+                //fetchImage(state.current().lang, image, 600, 600, function (img) {
+                //    $('#' + imageid).attr('src', img);
+                //});
+            });
+        });
+        fetchFeed('potd', function (htmlList) {
+            htmlList.slice(0, 6).forEach(function (html, index) {
+                var $html = $('<div>').html(html),
+                    $links = $html.find('a'),
+                    $imgs = $html.find('img'),
+                    title = '',
+                    image = '';
+                for (var i = 0; i < $links.length; i++) {
+                    var $link = $($links[i]);
+                    if ($link.find('img').length) {
+                        // Skip a link containing an image
+                        continue;
+                    }
+                    title = extractWikiTitle($link.attr('href'));
+                    break;
+                }
+                if ($imgs.length) {
+                    image = $imgs.attr('src');
+                    if (image.substr(0, 2) == '//') {
+                        image = 'https:' + image;
+                    }
+                }
+                var imageid = ("img" + Math.random()).replace('.', '');
+                list.push({
+                    title: title,
+                    snippet: stripHtmlTags(html).substr(0, 120) + '...',
+                    image: image,
+                    imageid: imageid,
+                    group: 'Featured pictures',
+                    style: (index == 0) ? 'primary-item' : 'featured-item'
+                });
+
                 //fetchImage(state.current().lang, image, 600, 600, function (img) {
                 //    $('#' + imageid).attr('src', img);
                 //});

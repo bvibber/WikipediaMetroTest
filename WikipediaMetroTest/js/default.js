@@ -129,7 +129,7 @@
 
             $('#pinCmd').click(function () {
                 var lang = state.current().lang,
-                    title = state.current().title,
+                    title = state.current().title.replace(/_/g, ' '),
                     tileId = 'Wikipedia.' + lang + '.' + encodeURIComponent(title),
                     shortName = title,
                     displayName = title + ' - Wikipedia',

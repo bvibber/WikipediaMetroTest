@@ -62,19 +62,7 @@
         }
     })();
 
-    app.onactivated = function (eventObject) {
-        var detail = eventObject.detail;
-        if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.launch) {
-            if (detail.previousExecutionState !== Windows.ApplicationModel.Activation.ApplicationExecutionState.terminated) {
-                // TODO: This application has been newly launched. Initialize C:\Users\brion\src\wiki\WikipediaMetroTest\WikipediaMetroTest\js\default.js
-                // your application here.
-            } else {
-                // TODO: This application has been reactivated from suspension. 
-                // Restore application state here.
-            }
-        } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
-            doSearch(state.current().lang, detail.queryText);
-        }
+    $(function () {
         WinJS.UI.processAll().then(function () {
             initHub();
             // Handler for links!
@@ -192,6 +180,21 @@
                 });
             });
         });
+    });
+
+    app.onactivated = function (eventObject) {
+        var detail = eventObject.detail;
+        if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.launch) {
+            if (detail.previousExecutionState !== Windows.ApplicationModel.Activation.ApplicationExecutionState.terminated) {
+                // TODO: This application has been newly launched. Initialize C:\Users\brion\src\wiki\WikipediaMetroTest\WikipediaMetroTest\js\default.js
+                // your application here.
+            } else {
+                // TODO: This application has been reactivated from suspension. 
+                // Restore application state here.
+            }
+        } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
+            doSearch(state.current().lang, detail.queryText);
+        }
     };
     
     app.oncheckpoint = function (eventObject) {

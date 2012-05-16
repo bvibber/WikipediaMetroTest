@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="a947dc84-923c-48c6-9187-59e643af9cba" Version="1.0.0.9" Publisher="CN=brion" />
+  <Identity Name="a947dc84-923c-48c6-9187-59e643af9cba" Version="1.0.0.12" Publisher="CN=brion" />
   <Properties>
     <DisplayName>WikipediaMetroTest</DisplayName>
     <PublisherDisplayName>Wikimedia Foundation</PublisherDisplayName>

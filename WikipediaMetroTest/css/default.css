@@ -181,7 +181,7 @@
 #content, .lightbox-fg {
     -ms-user-select: text;
 }
-#content, #hub {
+#hub, #reader {
     position: absolute;
     top: 150px;
     right: 0px;
@@ -195,16 +195,6 @@
 }
 #hub h2.first {
     break-before: inherit;
-}
-#potd {
-    /* column-span: all; */
-}
-#potd table,
-#potd tbody,
-#potd tr,
-#potd th,
-#potd td {
-    display: block;
 }
 
 .column-spacer {

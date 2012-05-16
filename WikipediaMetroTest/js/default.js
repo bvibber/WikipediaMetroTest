@@ -207,6 +207,18 @@
         });
     });
 
+    function parseArgs(query) {
+        var args = {},
+            parts = query.split('&');
+        parts.forEach(function (chunk) {
+            var bits = chunk.split('='),
+                name = decodeURIComponent(bits[0]),
+                val = decodeURIComponent(bits[1]);
+            args[name] = val;
+        });
+        return args;
+    }
+
     app.onactivated = function (eventObject) {
         var detail = eventObject.detail;
         if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.launch) {
@@ -216,6 +228,11 @@
             } else {
                 // TODO: This application has been reactivated from suspension. 
                 // Restore application state here.
+            }
+            if (detail.arguments != '') {
+                console.log(detail.arguments);
+                var args = parseArgs(detail.arguments);
+                doLoadPage(args.lang, args.title);
             }
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
             doSearch(state.current().lang, detail.queryText);

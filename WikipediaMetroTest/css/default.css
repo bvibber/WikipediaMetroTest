@@ -176,7 +176,15 @@
 }
         
 #content {
-    font-family: Cambria;
+    font-family: 'Cambria';
+}
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+    font-family: 'Segoe UI';
 }
 #content, .lightbox-fg {
     -ms-user-select: text;
@@ -211,6 +219,10 @@
 #content .reflist {
     column-width: auto !important;
     column-count: 1 !important;
+}
+
+#semanticZoomer {
+    overflow-y: visible !important; /* sometimes lines get half cut off */
 }
 
 .lightbox-bg {
@@ -258,7 +270,7 @@ button.show-table {
     /* Fullscreen or most of screen */
     #content {
         overflow-x: scroll;
-        overflow-y: hidden;
+        overflow-y: visible;
         column-width: 300px;
         column-gap: 20px; 
         column-fill: auto;
@@ -281,7 +293,7 @@ button.show-table {
     /* Snapped */
     #content {
         padding:  10px;
-        overflow-x: hidden;
+        overflow-x: visible;
         overflow-y: scroll;
     }
     .lightbox-fg {

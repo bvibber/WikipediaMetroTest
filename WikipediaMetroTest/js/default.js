@@ -127,6 +127,31 @@
             });
             $(window).resize();
 
+            $('#pinCmd').click(function () {
+                var lang = state.current().lang,
+                    title = state.current().title,
+                    tileId = 'Wikipedia.' + lang + '.' + encodeURIComponent(title),
+                    shortName = title,
+                    displayName = title + ' - Wikipedia',
+                    tileOptions = Windows.UI.StartScreen.TileOptions.showNameOnLogo,
+                    uriLogo = new Windows.Foundation.Uri("ms-appx:///images/secondary-tile.png"),
+                    tileActivationArguments = "lang=" + lang + '&' + 'title=' + encodeURIComponent(title),
+                    tile = new Windows.UI.StartScreen.SecondaryTile(tileId, shortName, displayName, tileActivationArguments, tileOptions, uriLogo);
+
+                var element = document.getElementById("pinCmd"),
+                    selectionRect = element.getBoundingClientRect();
+                tile.requestCreateAsync({ x: selectionRect.left, y: selectionRect.top }).then(function (isCreated) {
+                    if (isCreated) {
+                        console.log('tile is created');
+                        // Secondary tile successfully pinned.
+                    } else {
+                        console.log('tile is not created');
+                        // Secondary tile not pinned.
+                    }
+                });
+
+            });
+
             $('#browserCmd').click(function () {
                 var url = articleUrl(state.current().lang, state.current().title),
                     uri = new Windows.Foundation.Uri(url);

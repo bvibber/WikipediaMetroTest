@@ -54,6 +54,7 @@
     <Content Include="default.html" />
     <Content Include="images\back.svg" />
     <Content Include="images\logo.png" />
+    <Content Include="images\secondary-tile.png" />
     <Content Include="images\smalllogo.png" />
     <Content Include="images\splashscreen.png" />
     <Content Include="images\storelogo.png" />

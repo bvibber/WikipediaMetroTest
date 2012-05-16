@@ -72,124 +72,124 @@
                 // TODO: This application has been reactivated from suspension. 
                 // Restore application state here.
             }
-            WinJS.UI.processAll().then(function () {
-                initHub();
-                // Handler for links!
-                $(document).on('click', 'a', function (event) {
-                    var url = $(this).attr('href'),
-                        refMatches = url.match(/^#cite_note/),
-                        hashMatches = url.match(/^#/),
-                        wikiMatches = url.match(/^\/wiki\/(.*)/);
-                    if (refMatches) {
-                        // Reference link
-                        var $ref = $(url).clone();
-                        showLightbox($ref, 'small');
-                        event.preventDefault();
-                    } else if (hashMatches) {
-                        // no-op, but close any lightboxes first
-                        $('.lightbox-bg, .lightbox-fg').remove();
-                    } else if (wikiMatches) {
-                        // Internal wiki-link
-                        $('.lightbox-bg, .lightbox-fg').remove();
-                        var lang = state.current().lang,
-                            title = decodeURIComponent(wikiMatches[1]);
-                        if ($(this).hasClass('image')) {
-                            // Image link
-                            showImage(lang, title);
-                        } else {
-                            doLoadPage(lang, title);
-                        }
-                        event.preventDefault();
-                    } else {
-                        // Remote or absolute link
-                        if (url.match(/^\/\//)) {
-                            // fixup for protocol-relative links
-                            url = 'https:' + url;
-                        }
-                        var uri = new Windows.Foundation.Uri(url);
-                        Windows.System.Launcher.launchUriAsync(uri);
-                        event.preventDefault();
-                    }
-                });
-                $('#back').click(function () {
-                    //doShowHub();
-                    doGoBack();
-                });
-                $('#resultlist').bind('iteminvoked', function (event) {
-                    var index = event.originalEvent.detail.itemIndex;
-                    var selected = SearchResults.itemList.getItem(index);
-                    console.log(selected);
-                    if (!selected.data.title) {
-                        throw new Error("bad title");
-                    }
-                    doLoadPage(state.current().lang, selected.data.title);
-                });
-                $('#hub-list').bind('iteminvoked', function (event) {
-                    var index = event.originalEvent.detail.itemIndex;
-                    var selected = HubContents.groupedList.getItem(index);
-                    if (selected.data.title) {
-                        doLoadPage(state.current().lang, selected.data.title);
-                    }
-                });
-                $(window).bind('resize', function () {
-                    sizeContent();
-                });
-                $(window).resize();
-
-                $('#browserCmd').click(function () {
-                    var url = articleUrl(state.current().lang, state.current().title),
-                        uri = new Windows.Foundation.Uri(url);
-                    Windows.System.Launcher.launchUriAsync(uri);
-                });
-
-                $('#readInCmd').click(function () {
-                    var title = state.current().title,
-                        lang = state.current().lang,
-                        url = 'https://' + lang + '.wikipedia.org/w/api.php';
-                    $.ajax({
-                        url: url,
-                        data: {
-                            action: 'query',
-                            prop: 'langlinks',
-                            titles: title,
-                            lllimit: 250,
-                            format: 'json'
-                        },
-                        success: function (data) {
-                            var div = document.createElement('div'),
-                                langlinks;
-                            $.each(data.query.pages, function (i, page) {
-                                langlinks = page.langlinks;
-                            });
-                            if (!langlinks) {
-                                //throw new Error("langlinks barfed");
-                            } else {
-                                langlinks.forEach(function (langlink) {
-                                    var lang = langlink.lang,
-                                        target = langlink['*'],
-                                        label = target + ' (' + lang + ')',
-                                        button = document.createElement('button'),
-                                        command = new WinJS.UI.MenuCommand(button, {
-                                            label: label
-                                        });
-                                    command.addEventListener('click', function () {
-                                        doLoadPage(lang, target);
-                                    });
-                                    div.appendChild(button);
-                                });
-                            }
-                            $('body').append(div);
-                            var menu = new WinJS.UI.Menu(div, {
-                                anchor: $('#readInCmd')[0]
-                            });
-                            menu.show();
-                        }
-                    });
-                });
-            });
         } else if (detail.kind === Windows.ApplicationModel.Activation.ActivationKind.search) {
             doSearch(state.current().lang, detail.queryText);
         }
+        WinJS.UI.processAll().then(function () {
+            initHub();
+            // Handler for links!
+            $(document).on('click', 'a', function (event) {
+                var url = $(this).attr('href'),
+                    refMatches = url.match(/^#cite_note/),
+                    hashMatches = url.match(/^#/),
+                    wikiMatches = url.match(/^\/wiki\/(.*)/);
+                if (refMatches) {
+                    // Reference link
+                    var $ref = $(url).clone();
+                    showLightbox($ref, 'small');
+                    event.preventDefault();
+                } else if (hashMatches) {
+                        // no-op, but close any lightboxes first
+                    $('.lightbox-bg, .lightbox-fg').remove();
+                } else if (wikiMatches) {
+                        // Internal wiki-link
+                    $('.lightbox-bg, .lightbox-fg').remove();
+                    var lang = state.current().lang,
+                        title = decodeURIComponent(wikiMatches[1]);
+                    if ($(this).hasClass('image')) {
+                        // Image link
+                        showImage(lang, title);
+                    } else {
+                        doLoadPage(lang, title);
+                    }
+                    event.preventDefault();
+                } else {
+                    // Remote or absolute link
+                    if (url.match(/^\/\//)) {
+                        // fixup for protocol-relative links
+                        url = 'https:' + url;
+                    }
+                    var uri = new Windows.Foundation.Uri(url);
+                    Windows.System.Launcher.launchUriAsync(uri);
+                    event.preventDefault();
+                }
+            });
+            $('#back').click(function () {
+                //doShowHub();
+                doGoBack();
+            });
+            $('#resultlist').bind('iteminvoked', function (event) {
+                var index = event.originalEvent.detail.itemIndex;
+                var selected = SearchResults.itemList.getItem(index);
+                console.log(selected);
+                if (!selected.data.title) {
+                    throw new Error("bad title");
+                }
+                doLoadPage(state.current().lang, selected.data.title);
+            });
+            $('#hub-list').bind('iteminvoked', function (event) {
+                var index = event.originalEvent.detail.itemIndex;
+                var selected = HubContents.groupedList.getItem(index);
+                if (selected.data.title) {
+                    doLoadPage(state.current().lang, selected.data.title);
+                }
+            });
+            $(window).bind('resize', function () {
+                sizeContent();
+            });
+            $(window).resize();
+
+            $('#browserCmd').click(function () {
+                var url = articleUrl(state.current().lang, state.current().title),
+                    uri = new Windows.Foundation.Uri(url);
+                Windows.System.Launcher.launchUriAsync(uri);
+            });
+
+            $('#readInCmd').click(function () {
+                var title = state.current().title,
+                    lang = state.current().lang,
+                    url = 'https://' + lang + '.wikipedia.org/w/api.php';
+                $.ajax({
+                    url: url,
+                    data: {
+                        action: 'query',
+                        prop: 'langlinks',
+                        titles: title,
+                        lllimit: 250,
+                        format: 'json'
+                    },
+                    success: function (data) {
+                        var div = document.createElement('div'),
+                            langlinks;
+                        $.each(data.query.pages, function (i, page) {
+                            langlinks = page.langlinks;
+                        });
+                        if (!langlinks) {
+                            //throw new Error("langlinks barfed");
+                        } else {
+                            langlinks.forEach(function (langlink) {
+                                var lang = langlink.lang,
+                                    target = langlink['*'],
+                                    label = target + ' (' + lang + ')',
+                                    button = document.createElement('button'),
+                                    command = new WinJS.UI.MenuCommand(button, {
+                                        label: label
+                                    });
+                                command.addEventListener('click', function () {
+                                    doLoadPage(lang, target);
+                                });
+                                div.appendChild(button);
+                            });
+                        }
+                        $('body').append(div);
+                        var menu = new WinJS.UI.Menu(div, {
+                            anchor: $('#readInCmd')[0]
+                        });
+                        menu.show();
+                    }
+                });
+            });
+        });
     };
     
     app.oncheckpoint = function (eventObject) {
@@ -266,7 +266,7 @@
         $('#hub').hide();
         $('#back').show();
         $('#reader').hide();
-        $('#search-results').show();
+        $('#search').show();
         $('#title').text(query);
         var url = 'https://' + lang + '.wikipedia.org/w/api.php';
         $.ajax({
@@ -309,7 +309,7 @@
         // Clear the results list
         var list = SearchResults.itemList;
         list.splice(0, list.length);
-        $('#search-results').hide();
+        $('#search').hide();
         $('#title').text('Wikipedia');
     }
 
@@ -515,27 +515,17 @@
             title: ''
         });
         $('#title').text('Wikipedia');
-        $('#hub').show();
         $('#search').hide();
         $('#reader').hide();
         $('#back').hide();
+        $('#hub').show();
         sizeContent();
     }
 
     function initHub() {
         doShowHub();
-        /*
-        fetchFeed('featured', function (html) {
-            insertWikiHtml('#featured', html);
-            var txt = stripHtmlTags(html);
-            updateLiveTile("Featured Article", txt);
-        });
-        fetchFeed('potd', function (html) {
-            insertWikiHtml('#potd', html);
-        });
-        fetchFeed('onthisday', function (html) {
-            insertWikiHtml('#onthisday', html);
-        });*/
+
+        // Empty any old contents?
         var list = HubContents.itemList;
         list.splice(0, list.length);
         // Spacer element

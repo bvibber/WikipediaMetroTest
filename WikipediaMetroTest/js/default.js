@@ -269,6 +269,7 @@
         $('#search').show();
         $('#title').text(query);
         var url = 'https://' + lang + '.wikipedia.org/w/api.php';
+        $('#spinner').show();
         $.ajax({
             url: url,
             data: {
@@ -280,6 +281,7 @@
                 format: 'json'
             },
             success: function (data) {
+                $('#spinner').hide();
                 // data.query.search
                 // [
                 //   {ns, size, snippet, timestamp, title, wordcount
@@ -326,6 +328,7 @@
         $('#reader').show();
         sizeContent();
 
+        $('#spinner').show();
         $.ajax({
             url: 'https://' + lang + '.wikipedia.org/w/api.php',
             data: {
@@ -335,6 +338,7 @@
                 format: 'json'
             },
             success: function (data) {
+                $('#spinner').hide();
                 if (data.error) {
                     // No exact match? Go do a search.
                     state.pop(); // skip this one in history
@@ -536,7 +540,9 @@
             group: ' ',
             style: 'spacer-item'
         });
+        $('#spinner').show();
         fetchFeed('featured', function (htmlList) {
+            $('#spinner').hide();
             var txt = stripHtmlTags(htmlList[0]);
             updateLiveTile("Featured Article", txt);
             htmlList.slice(0, 8).forEach(function (html, index) {
@@ -572,6 +578,7 @@
             });
         });
         fetchFeed('potd', function (htmlList) {
+            $('#spinner').hide();
             htmlList.slice(0, 6).forEach(function (html, index) {
                 var $html = $('<div>').html(html),
                     $links = $html.find('a'),
@@ -609,6 +616,7 @@
             });
         });
         fetchFeed('onthisday', function (htmlList) {
+            $('#spinner').hide();
             var html = htmlList[0],
                 $html = $('<div>').html(html),
                 $lis = $html.find('li');

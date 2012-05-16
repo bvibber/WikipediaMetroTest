@@ -161,9 +161,11 @@
                     success: function (data) {
                         var div = document.createElement('div'),
                             langlinks;
-                        $.each(data.query.pages, function (i, page) {
-                            langlinks = page.langlinks;
-                        });
+                        if (data.query && data.query.pages) {
+                            $.each(data.query.pages, function (i, page) {
+                                langlinks = page.langlinks;
+                            });
+                        }
                         if (!langlinks) {
                             //throw new Error("langlinks barfed");
                         } else {

@@ -62,6 +62,15 @@
         }
     })();
 
+    function md5(str) {
+        var crypto = Windows.Security.Cryptography,
+            buffer = crypto.CryptographicBuffer.convertStringToBinary(str, crypto.BinaryStringEncoding.Utf8),
+            provider = crypto.Core.HashAlgorithmProvider.openAlgorithm('MD5'),
+            buffHash = provider.hashData(buffer),
+            strHash = crypto.CryptographicBuffer.encodeToHexString(buffHash);
+        return strHash;
+    }
+
     $(function () {
         WinJS.UI.processAll().then(function () {
             initHub();
@@ -130,7 +139,7 @@
             $('#pinCmd').click(function () {
                 var lang = state.current().lang,
                     title = state.current().title.replace(/_/g, ' '),
-                    tileId = 'Wikipedia.' + lang + '.' + encodeURIComponent(title),
+                    tileId = 'Wikipedia.' + lang + '.' + md5(title),
                     shortName = title,
                     displayName = title + ' - Wikipedia',
                     tileOptions = Windows.UI.StartScreen.TileOptions.showNameOnLogo,

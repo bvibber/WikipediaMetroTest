@@ -620,7 +620,7 @@
                     image: image,
                     imageid: imageid,
                     group: 'Featured articles',
-                    style: (index == 0) ? 'featured-item large' : 'featured-item'
+                    style: (index < 1) ? 'featured-item large' : 'featured-item'
                 });
             });
         });

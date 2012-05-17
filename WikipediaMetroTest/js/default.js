@@ -583,6 +583,7 @@
         list.push({
             title: '',
             snippet: '',
+            heading: '',
             image: '',
             group: ' ',
             style: 'spacer-item'
@@ -616,6 +617,7 @@
                 var imageid = ("img" + Math.random()).replace('.', '');
                 list.push({
                     title: title,
+                    heading: '',
                     snippet: stripHtmlTags(html).substr(0, 100) + '...',
                     image: image,
                     imageid: imageid,
@@ -650,6 +652,7 @@
                 var imageid = ("img" + Math.random()).replace('.', '');
                 list.push({
                     title: title,
+                    heading: '',
                     snippet: '',
                     image: image,
                     imageid: imageid,
@@ -672,9 +675,13 @@
                     txt = stripHtmlTags($li.html()),
                     $link = $li.find('b a'),
                     title = extractWikiTitle($link.attr('href'));
+                var bits = txt.split(' – '),
+                    year = bits[0],
+                    detail = bits[1];
                 list.push({
                     title: title,
-                    snippet: txt,
+                    heading: year,
+                    snippet: detail,
                     image: '',
                     group: 'On this day',
                     style: 'onthisday-item'

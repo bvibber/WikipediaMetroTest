@@ -50,6 +50,9 @@
     width: 590px;
     height: 350px;
 }
+.featured-item h5 {
+    display: none;
+}
 .photo-item h4 {
     position: absolute;
     bottom: 0;
@@ -85,6 +88,9 @@
 .featured-item.large {
     width: 350px;
     height: 170px;
+}
+.featured-item h5 {
+    display: none;
 }
 .featured-item h4 {
     position: absolute;
@@ -125,7 +131,7 @@
 
 .onthisday-item {
     width: 288px;
-    height: 78px;
+    height: 168px;
     border: none;
     padding: 0px;
     overflow: hidden;
@@ -134,15 +140,24 @@
 }
 .onthisday-item h4 {
     display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    
+    font-size: 14px;
 }
-.onthisday-item h4 {
-    background: #beb;
+.onthisday-item h5 {
+    padding: 10px;
+    padding-bottom: 0;
+    font-size: 24px;
+    font-weight: bold;
 }
 .onthisday-item h6 {
-    position: absolute;
-    top: 0;
-    bottom: 0px;
-    left: 0;
     padding: 10px;
 }
 .onthisday-item h6 {

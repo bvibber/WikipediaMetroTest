@@ -52,7 +52,7 @@
 }
 .photo-item h4 {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     height: 30px;
@@ -88,7 +88,7 @@
 }
 .featured-item h4 {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     height: 30px;
@@ -104,10 +104,10 @@
 .featured-item.large h6 {
     display: block;
     position: absolute;
-    top: 50px;
+    bottom: 50px;
     left: 0px;
-    width: 120px;
-    bottom: 0;
+    width: 160px;
+    top: 0;
     padding: 0 10px;
     background: rgba(0, 0, 0, 0.5);
     color: white;
@@ -118,6 +118,9 @@
     right: 0;
     width: 100%;
     height: auto;
+}
+.featured-item.large img {
+    width: 170px;
 }
 
 .onthisday-item {

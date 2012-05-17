@@ -71,6 +71,10 @@
         return strHash;
     }
 
+    function tileId(lang, title) {
+        return 'Wikipedia.' + lang + '.' + md5(title.replace(/_/g, ' '));
+    }
+
     $(function () {
         WinJS.UI.processAll().then(function () {
             initHub();
@@ -136,16 +140,27 @@
             });
             $(window).resize();
 
+            $('#appbar').bind('beforeshow', function () {
+                var lang = state.current().lang,
+                    title = state.current().title;
+                if (Windows.UI.StartScreen.SecondaryTile.exists(tileId(lang, title))) {
+                    $("#pinCmd").hide();
+                    $("#unpinCmd").show();
+                } else {
+                    $("#unpinCmd").hide();
+                    $("#pinCmd").show();
+                }
+            });
+
             $('#pinCmd').click(function () {
                 var lang = state.current().lang,
                     title = state.current().title.replace(/_/g, ' '),
-                    tileId = 'Wikipedia.' + lang + '.' + md5(title),
                     shortName = title,
                     displayName = title + ' - Wikipedia',
                     tileOptions = Windows.UI.StartScreen.TileOptions.showNameOnLogo,
                     uriLogo = new Windows.Foundation.Uri("ms-appx:///images/secondary-tile.png"),
                     tileActivationArguments = "lang=" + lang + '&' + 'title=' + encodeURIComponent(title),
-                    tile = new Windows.UI.StartScreen.SecondaryTile(tileId, shortName, displayName, tileActivationArguments, tileOptions, uriLogo);
+                    tile = new Windows.UI.StartScreen.SecondaryTile(tileId(lang, title), shortName, displayName, tileActivationArguments, tileOptions, uriLogo);
 
                 var element = document.getElementById("pinCmd"),
                     selectionRect = element.getBoundingClientRect();
@@ -158,7 +173,15 @@
                         // Secondary tile not pinned.
                     }
                 });
+            });
 
+            $('#unpinCmd').click(function () {
+                var lang = state.current().lang,
+                    title = state.current().title.replace(/_/g, ' '),
+                    tile = Windows.UI.StartScreen.SecondaryTile(tileId(lang, title)),
+                    element = document.getElementById("unpinCmd"),
+                    selectionRect = element.getBoundingClientRect();
+                tile.requestDeleteAsync({ x: selectionRect.left, y: selectionRect.top });
             });
 
             $('#browserCmd').click(function () {

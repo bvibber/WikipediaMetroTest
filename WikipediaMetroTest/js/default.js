@@ -622,14 +622,14 @@
                     if (image.substr(0, 2) == '//') {
                         image = 'https:' + image;
                     }
+                } else {
+                    image = '/images/secondary-tile.png';
                 }
-                var imageid = ("img" + Math.random()).replace('.', '');
                 list.push({
                     title: title,
                     heading: '',
                     snippet: stripHtmlTags(html).substr(0, 100) + '...',
                     image: image,
-                    imageid: imageid,
                     group: 'Featured articles',
                     style: (index < 1) ? 'featured-item large' : 'featured-item'
                 });

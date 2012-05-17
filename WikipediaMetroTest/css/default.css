@@ -170,6 +170,9 @@
     display: none;
 }
 
+#toc {
+    padding-left: 120px;
+}
 .tocItemTemplate {
     width: 310px;
     height: 30px;

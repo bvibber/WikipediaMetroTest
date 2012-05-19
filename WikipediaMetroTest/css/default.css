@@ -223,8 +223,11 @@
     left: 0px;
     height: 600px; /* updated dynamically */
 }
-#content h2, #hub h2 {
+#content h2 {
     break-before: column;
+    margin-after: 10px;
+}
+#hub h2 {
     position: relative;
     top: -0.5em;
 }
@@ -301,9 +304,6 @@ button.show-table {
         column-width: 300px;
         column-gap: 20px; 
         column-fill: auto;
-        padding:  10px;
-                
-        padding-bottom: 50px;
                 
         /* Padding for the left end of the screen */
         padding-left: 120px;

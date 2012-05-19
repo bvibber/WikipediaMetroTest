@@ -216,6 +216,10 @@
 #content, .lightbox-fg {
     -ms-user-select: text;
 }
+#content button {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
 #hub, #reader {
     position: absolute;
     top: 150px;

@@ -67,7 +67,9 @@
                 data-win-control="WinJS.UI.ListView"
                 data-win-options="{
                     itemDataSource : TocSections.itemList.dataSource,
-                    itemTemplate: select('#tocItemTemplate')
+                    itemTemplate: select('#tocItemTemplate'),
+                    selectionMode: 'none',
+                    swipeBehavior: 'none'
                 }">
             </div>
         </div>
@@ -84,7 +86,9 @@
                 data-win-control="WinJS.UI.ListView"
                 data-win-options="{
                     itemDataSource : SearchResults.itemList.dataSource,
-                    itemTemplate: select('#searchItemTemplate')
+                    itemTemplate: select('#searchItemTemplate'),
+                    selectionMode: 'none',
+                    swipeBehavior: 'none'
                 }">
             </div>
         </div>

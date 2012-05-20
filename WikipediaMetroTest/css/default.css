@@ -305,7 +305,7 @@ button.show-table {
     #content {
         overflow-x: scroll;
         overflow-y: visible;
-        column-width: 300px;
+        column-width: 320px;
         column-gap: 20px; 
         column-fill: auto;
                 

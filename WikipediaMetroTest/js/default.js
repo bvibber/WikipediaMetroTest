@@ -205,6 +205,7 @@
                     promise;
                 if (title == '') {
                     promise = getWikiLanguageLinks(lang);
+                    //promise = getLanguageLinks('en', 'Main Page');
                 } else {
                     promise = getLanguageLinks(lang, title);
                 }
@@ -677,6 +678,33 @@
         sizeContent();
     }
 
+    function getMainPage(lang) {
+        return new WinJS.Promise(function (complete, error, progress) {
+            var url = 'https://' + lang + '.wikipedia.org/w/api.php';
+            $.ajax({
+                url: url,
+                data: {
+                    action: 'query',
+                    meta: 'allmessages',
+                    ammessages: 'mainpage',
+                    format: 'json'
+                },
+                success: function (data, status, xhr) {
+                    var title = 'Main Page';
+                    data.query.allmessages.forEach(function (msg) {
+                        if (msg.name == 'mainpage') {
+                            title = msg['*'];
+                        }
+                    });
+                    complete(title);
+                },
+                error: function (xhr, err) {
+                    error(err);
+                }
+            });
+        });
+    }
+
     function initHub(lang) {
         doShowHub(lang);
 
@@ -684,9 +712,30 @@
         var list = HubContents.itemList;
         list.splice(1, list.length - 1);
 
+        var pings = 3, nItems = 0;
+        var completeAnother = function () {
+            pings--;
+            if (pings == 0) {
+                $('#spinner').hide();
+                if (nItems == 0) {
+                    // No featured feeds for this wiki
+                    //doLoadPage(lang, 'Main Page');
+                    getMainPage(lang).then(function (title) {
+                        list.push({
+                            title: title,
+                            heading: '',
+                            snippet: '',
+                            image: '/images/secondary-tile.png',
+                            group: 'Main Page',
+                            style: 'featured-item'
+                        });
+                    });
+                }
+            }
+        };
+
         $('#spinner').show();
         fetchFeed(lang, 'featured', function (htmlList) {
-            $('#spinner').hide();
             var html;
             if (htmlList.length) {
                 var txt = stripHtmlTags(htmlList[0]);
@@ -715,6 +764,7 @@
                 } else {
                     image = '/images/secondary-tile.png';
                 }
+                nItems++;
                 list.push({
                     title: title,
                     heading: '',
@@ -724,6 +774,7 @@
                     style: (index < 1) ? 'featured-item large' : 'featured-item'
                 });
             });
+            completeAnother();
         });
         fetchFeed(lang, 'potd', function (htmlList) {
             $('#spinner').hide();
@@ -749,6 +800,7 @@
                     }
                 }
                 var imageid = ("img" + Math.random()).replace('.', '');
+                nItems++;
                 list.push({
                     title: title,
                     heading: '',
@@ -763,6 +815,7 @@
                 //    $('#' + imageid).attr('src', img);
                 //});
             });
+            completeAnother();
         });
         fetchFeed(lang, 'onthisday', function (htmlList) {
             $('#spinner').hide();
@@ -773,10 +826,11 @@
                 var $li = $(this),
                     txt = stripHtmlTags($li.html()),
                     $link = $li.find('b a'),
-                    title = extractWikiTitle($link.attr('href'));
+                    title = extractWikiTitle($link.attr('href') + '');
                 var bits = txt.split(' – '),
                     year = bits[0],
                     detail = bits[1];
+                nItems++;
                 list.push({
                     title: title,
                     heading: year,
@@ -786,6 +840,7 @@
                     style: 'onthisday-item'
                 });
             });
+            completeAnother();
         });
     }
 

@@ -200,8 +200,8 @@
                     } else {
                         langlinks.forEach(function (langlink) {
                             var lang = langlink.lang,
-                                target = langlink['*'],
-                                label = target + ' (' + lang + ')',
+                                target = langlink.target,
+                                label = langlink.title + ' (' + lang + ')',
                                 button = document.createElement('button'),
                                 command = new WinJS.UI.MenuCommand(button, {
                                     label: label
@@ -238,7 +238,51 @@
                     var langlinks = [];
                     if (data.query && data.query.pages) {
                         $.each(data.query.pages, function (i, page) {
-                            langlinks = page.langlinks;
+                            page.langlinks.forEach(function (link) {
+                                langlinks.push({
+                                    lang: link.lang,
+                                    target: link['*'],
+                                    title: link['*']
+                                });
+                            });
+                        });
+                    }
+                    complete(langlinks);
+                },
+                error: function (msg) {
+                    error(msg)
+                }
+            });
+        });
+    }
+
+    function getWikiLanguageLinks(lang) {
+        var url = 'https://' + lang + '.wikipedia.org/w/api.php';
+        return new WinJS.Promise(function (complete, error, progress) {
+            $.ajax({
+                url: url,
+                data: {
+                    action: 'sitematrix',
+                    format: 'json'
+                },
+                success: function (data) {
+                    var langlinks = [];
+                    if (data.query && data.sitematrix) {
+                        var matrix = data.sitematrix,
+                            langlinks = [];
+                        matrix.forEach(function(lang, index) {
+                            if (index.match(/^\d+$/)) {
+                                var lang = matrix[i];
+                                lang.site.forEach(function(site) {
+                                    if (site.code == 'wiki') {
+                                        langlinks.push({
+                                            lang: lang.code,
+                                            target: '',
+                                            title: lang.name
+                                        });
+                                    }
+                                });
+                            }
                         });
                     }
                     complete(langlinks);

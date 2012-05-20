@@ -127,6 +127,10 @@
             $('#back').click(function () {
                 //doShowHub();
                 doGoBack();
+            }).bind('contextmenu', function (event) {
+                // Catch touch context menu
+                event.preventDefault();
+                showHistoryMenu(this);
             });
             $('#resultlist').bind('iteminvoked', function (event) {
                 var index = event.originalEvent.detail.itemIndex;
@@ -200,14 +204,14 @@
             });
 
             $('#readInCmd').click(function () {
-                var title = state.current().title,
-                    lang = state.current().lang,
+                var current = state.current(),
+                    title = current.title,
+                    lang = current.lang,
                     promise;
-                if (title == '') {
-                    promise = getWikiLanguageLinks(lang);
-                    //promise = getLanguageLinks('en', 'Main Page');
-                } else {
+                if (current.type == 'article') {
                     promise = getLanguageLinks(lang, title);
+                } else {
+                    promise = getWikiLanguageLinks(lang);
                 }
                 promise.then(function (langlinks) {
                     var div = document.createElement('div');
@@ -220,8 +224,10 @@
                                 label: label
                             });
                         command.addEventListener('click', function () {
-                            if (target == '') {
+                            if (current.type == 'hub') {
                                 initHub(lang);
+                            } else if (current.type == 'search') {
+                                doSearch(lang, current.search);
                             } else {
                                 doLoadPage(lang, target);
                             }
@@ -408,6 +414,7 @@
 
     function doSearch(lang, query) {
         state.push({
+            type: 'search',
             lang: lang,
             title: '',
             search: query
@@ -466,6 +473,7 @@
 
     function doLoadPage(lang, title) {
         state.push({
+            type: 'article',
             lang: lang,
             title: title
         });
@@ -667,6 +675,7 @@
 
     function doShowHub(lang) {
         state.push({
+            type: 'hub',
             lang: lang,
             title: ''
         });
@@ -922,7 +931,7 @@
     function extractWikiTitle(url) {
         var wikiMatches = url.match(/\/wiki\/(.*)/);
         if (wikiMatches) {
-            return decodeURIComponent(wikiMatches[1].replace(/_/g, ' '));
+            return decodeURIComponent(wikiMatches[1]).replace(/_/g, ' ');
         } else {
             throw new Error('not a wiki url');
         }
@@ -957,16 +966,53 @@
     function doGoBack() {
         var discard = state.pop(),
             redo = state.pop();
-        if (redo.title == '') {
-            if ('search' in redo) {
-                doSearch(redo.lang, redo.search);
-            } else {
-                doShowHub(redo.lang);
-            }
+        if (redo.type == 'hub') {
+            doShowHub(redo.lang);
+        } else if (redo.type == 'search') {
+            doSearch(redo.lang, redo.search);
         } else {
             doLoadPage(redo.lang, redo.title);
         }
 
+    }
+
+    function showHistoryMenu(anchor) {
+        var div = document.createElement('div');
+        state.stack.slice().reverse().forEach(function (item, n) {
+            if (n == 0) {
+                return;
+            }
+            var lang = item.lang,
+                target = item.title,
+                label;
+            if (item.type == 'hub') {
+                label = 'Home (' + item.lang + ')';
+            } else if (item.type == 'search') {
+                label = item.search + ' (' + item.lang + ')';
+            } else {
+                label = item.title + ' (' + item.lang + ')';
+            }
+            var button = document.createElement('button'),
+                command = new WinJS.UI.MenuCommand(button, {
+                    label: label
+                });
+            command.addEventListener('click', function () {
+                state.stack.splice(state.stack.length - n - 1, n + 1);
+                if (item.type == 'hub') {
+                    initHub(lang);
+                } else if (item.type == 'search') {
+                    doSearch(lang, item.search);
+                } else {
+                    doLoadPage(lang, target);
+                }
+            });
+            div.appendChild(button);
+        });
+        $('body').append(div);
+        var menu = new WinJS.UI.Menu(div, {
+            anchor: anchor
+        });
+        menu.show();
     }
 
     app.start();

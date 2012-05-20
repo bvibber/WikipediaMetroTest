@@ -192,52 +192,63 @@
 
             $('#readInCmd').click(function () {
                 var title = state.current().title,
-                    lang = state.current().lang,
-                    url = 'https://' + lang + '.wikipedia.org/w/api.php';
-                $.ajax({
-                    url: url,
-                    data: {
-                        action: 'query',
-                        prop: 'langlinks',
-                        titles: title,
-                        lllimit: 250,
-                        format: 'json'
-                    },
-                    success: function (data) {
-                        var div = document.createElement('div'),
-                            langlinks;
-                        if (data.query && data.query.pages) {
-                            $.each(data.query.pages, function (i, page) {
-                                langlinks = page.langlinks;
-                            });
-                        }
-                        if (!langlinks) {
-                            //throw new Error("langlinks barfed");
-                        } else {
-                            langlinks.forEach(function (langlink) {
-                                var lang = langlink.lang,
-                                    target = langlink['*'],
-                                    label = target + ' (' + lang + ')',
-                                    button = document.createElement('button'),
-                                    command = new WinJS.UI.MenuCommand(button, {
-                                        label: label
-                                    });
-                                command.addEventListener('click', function () {
-                                    doLoadPage(lang, target);
+                    lang = state.current().lang;
+                getLanguageLinks(lang, title).then(function (langlinks) {
+                    var div = document.createElement('div');
+                    if (!langlinks) {
+                        //throw new Error("langlinks barfed");
+                    } else {
+                        langlinks.forEach(function (langlink) {
+                            var lang = langlink.lang,
+                                target = langlink['*'],
+                                label = target + ' (' + lang + ')',
+                                button = document.createElement('button'),
+                                command = new WinJS.UI.MenuCommand(button, {
+                                    label: label
                                 });
-                                div.appendChild(button);
+                            command.addEventListener('click', function () {
+                                doLoadPage(lang, target);
                             });
-                        }
-                        $('body').append(div);
-                        var menu = new WinJS.UI.Menu(div, {
-                            anchor: $('#readInCmd')[0]
+                            div.appendChild(button);
                         });
-                        menu.show();
                     }
+                    $('body').append(div);
+                    var menu = new WinJS.UI.Menu(div, {
+                        anchor: $('#readInCmd')[0]
+                    });
+                    menu.show();
                 });
             });
         });
     });
+
+    function getLanguageLinks(lang, title) {
+        var url = 'https://' + lang + '.wikipedia.org/w/api.php';
+        return new WinJS.Promise(function (complete, error, progress) {
+            $.ajax({
+                url: url,
+                data: {
+                    action: 'query',
+                    prop: 'langlinks',
+                    titles: title,
+                    lllimit: 250,
+                    format: 'json'
+                },
+                success: function (data) {
+                    var langlinks = [];
+                    if (data.query && data.query.pages) {
+                        $.each(data.query.pages, function (i, page) {
+                            langlinks = page.langlinks;
+                        });
+                    }
+                    complete(langlinks);
+                },
+                error: function (msg) {
+                    error(msg)
+                }
+            });
+        });
+    }
 
     function parseArgs(query) {
         var args = {},

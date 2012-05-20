@@ -20,6 +20,15 @@
             index: 0
         });
     };
+    // Spacer element
+    HubContents.itemList.push({
+        title: '',
+        snippet: '',
+        heading: '',
+        image: '',
+        group: ' ',
+        style: 'spacer-item'
+    });
 
     // State stack!
     var state = {
@@ -77,7 +86,7 @@
 
     $(function () {
         WinJS.UI.processAll().then(function () {
-            initHub();
+            initHub('en');
             // Handler for links!
             $(document).on('click', 'a', function (event) {
                 var url = $(this).attr('href'),
@@ -192,26 +201,32 @@
 
             $('#readInCmd').click(function () {
                 var title = state.current().title,
-                    lang = state.current().lang;
-                getLanguageLinks(lang, title).then(function (langlinks) {
+                    lang = state.current().lang,
+                    promise;
+                if (title == '') {
+                    promise = getWikiLanguageLinks(lang);
+                } else {
+                    promise = getLanguageLinks(lang, title);
+                }
+                promise.then(function (langlinks) {
                     var div = document.createElement('div');
-                    if (!langlinks) {
-                        //throw new Error("langlinks barfed");
-                    } else {
-                        langlinks.forEach(function (langlink) {
-                            var lang = langlink.lang,
-                                target = langlink.target,
-                                label = langlink.title + ' (' + lang + ')',
-                                button = document.createElement('button'),
-                                command = new WinJS.UI.MenuCommand(button, {
-                                    label: label
-                                });
-                            command.addEventListener('click', function () {
-                                doLoadPage(lang, target);
+                    langlinks.forEach(function (langlink) {
+                        var lang = langlink.lang,
+                            target = langlink.target,
+                            label = langlink.title + ' (' + lang + ')',
+                            button = document.createElement('button'),
+                            command = new WinJS.UI.MenuCommand(button, {
+                                label: label
                             });
-                            div.appendChild(button);
+                        command.addEventListener('click', function () {
+                            if (target == '') {
+                                initHub(lang);
+                            } else {
+                                doLoadPage(lang, target);
+                            }
                         });
-                    }
+                        div.appendChild(button);
+                    });
                     $('body').append(div);
                     var menu = new WinJS.UI.Menu(div, {
                         anchor: $('#readInCmd')[0]
@@ -267,12 +282,11 @@
                 },
                 success: function (data) {
                     var langlinks = [];
-                    if (data.query && data.sitematrix) {
+                    if (data.sitematrix) {
                         var matrix = data.sitematrix,
                             langlinks = [];
-                        matrix.forEach(function(lang, index) {
+                        $.each(matrix, function(index, lang) {
                             if (index.match(/^\d+$/)) {
-                                var lang = matrix[i];
                                 lang.site.forEach(function(site) {
                                     if (site.code == 'wiki') {
                                         langlinks.push({
@@ -557,8 +571,7 @@
         tileNotification.expirationTime = new Date(currentTime.getTime() + 600 * 1000);
         Notifications.TileUpdateManager.createTileUpdaterForApplication().update(tileNotification);
     }
-    function fetchFeed(feed, callback) {
-        var lang = state.current().lang;
+    function fetchFeed(lang, feed, callback) {
         $.ajax({
             url: "https://" + lang + ".wikipedia.org/w/api.php",
             data: {
@@ -567,13 +580,17 @@
                 feedformat: 'atom'
             },
             success: function (data, textstatus, request) {
-                var summaries = request.responseXML.getElementsByTagName('summary');
-                var htmlList = [];
-                for (var i = summaries.length - 1; i >= 0; i--) {
-                    var summary = summaries[i];
-                    htmlList.push(summary.textContent);
+                if (request.responseXML) {
+                    var summaries = request.responseXML.getElementsByTagName('summary');
+                    var htmlList = [];
+                    for (var i = summaries.length - 1; i >= 0; i--) {
+                        var summary = summaries[i];
+                        htmlList.push(summary.textContent);
+                    }
+                    callback(htmlList);
+                } else {
+                    callback([]);
                 }
-                callback(htmlList);
             }
         });
     }
@@ -649,7 +666,7 @@
 
     function doShowHub(lang) {
         state.push({
-            lang: 'en',
+            lang: lang,
             title: ''
         });
         $('#title').text('Wikipedia');
@@ -660,26 +677,21 @@
         sizeContent();
     }
 
-    function initHub() {
-        doShowHub();
+    function initHub(lang) {
+        doShowHub(lang);
 
-        // Empty any old contents?
+        // Empty any old contents? except spacer
         var list = HubContents.itemList;
-        list.splice(0, list.length);
-        // Spacer element
-        list.push({
-            title: '',
-            snippet: '',
-            heading: '',
-            image: '',
-            group: ' ',
-            style: 'spacer-item'
-        });
+        list.splice(1, list.length - 1);
+
         $('#spinner').show();
-        fetchFeed('featured', function (htmlList) {
+        fetchFeed(lang, 'featured', function (htmlList) {
             $('#spinner').hide();
-            var txt = stripHtmlTags(htmlList[0]);
-            updateLiveTile("Featured Article", txt);
+            var html;
+            if (htmlList.length) {
+                var txt = stripHtmlTags(htmlList[0]);
+                updateLiveTile("Featured Article", txt);
+            }
             htmlList.slice(0, 8).forEach(function (html, index) {
                 var $html = $('<div>').html(html),
                     $links = $html.find('a'),
@@ -713,7 +725,7 @@
                 });
             });
         });
-        fetchFeed('potd', function (htmlList) {
+        fetchFeed(lang, 'potd', function (htmlList) {
             $('#spinner').hide();
             htmlList.slice(0, 6).forEach(function (html, index) {
                 var $html = $('<div>').html(html),
@@ -752,7 +764,7 @@
                 //});
             });
         });
-        fetchFeed('onthisday', function (htmlList) {
+        fetchFeed(lang, 'onthisday', function (htmlList) {
             $('#spinner').hide();
             var html = htmlList[0],
                 $html = $('<div>').html(html),
@@ -859,7 +871,7 @@
             if ('search' in redo) {
                 doSearch(redo.lang, redo.search);
             } else {
-                doShowHub();
+                doShowHub(redo.lang);
             }
         } else {
             doLoadPage(redo.lang, redo.title);

@@ -52,7 +52,7 @@
         // Note: This is similar to default sorting behavior 
         //   when using WinJS.Binding.List.createGrouped()
         function compareGroups(left, right) {
-            var sort = ['Featured pictures', 'Featured articles', 'On this day'];
+            var sort = ['Featured pictures', 'Featured articles', 'On this day', 'Recent changes'];
             var n = sort.indexOf(left),
                 n2 = sort.indexOf(right);
             return n - n2;
@@ -687,6 +687,7 @@
                     action: 'query',
                     meta: 'allmessages',
                     ammessages: 'mainpage',
+                    amenableparser: 1,
                     format: 'json'
                 },
                 success: function (data, status, xhr) {
@@ -705,6 +706,24 @@
         });
     }
 
+    function getRecentChanges(lang) {
+        return new WinJS.Promise(function (complete, error, progress) {
+            var url = 'https://' + lang + '.wikipedia.org/w/api.php';
+            $.ajax({
+                url: url,
+                data: {
+                    action: 'query',
+                    list: 'recentchanges',
+                    rctoponly: 1,
+                    format: 'json'
+                },
+                success: function (data) {
+                    complete(data.query.recentchanges);
+                }
+            });
+        });
+    }
+
     function initHub(lang) {
         doShowHub(lang);
 
@@ -712,7 +731,7 @@
         var list = HubContents.itemList;
         list.splice(1, list.length - 1);
 
-        var pings = 3, nItems = 0;
+        var pings = 4, nItems = 0;
         var completeAnother = function () {
             pings--;
             if (pings == 0) {
@@ -839,6 +858,22 @@
                     group: 'On this day',
                     style: 'onthisday-item'
                 });
+            });
+            completeAnother();
+        });
+        getRecentChanges(lang).then(function (recentchanges) {
+            recentchanges.forEach(function (change) {
+                if (change.ns == 0 && change.type == 'edit') {
+                    nItems++;
+                    list.push({
+                        title: change.title,
+                        heading: '',
+                        snippet: '',
+                        image: '/images/secondary-tile.png',
+                        group: 'Recent changes',
+                        style: 'featured-item'
+                    });
+                }
             });
             completeAnother();
         });
